@@ -1,0 +1,27 @@
+<ion-view title="Connexion" id="page1">
+  <ion-content padding="true" class="has-header">
+    <div id="connexion-markdown2" style="text-align:center;" class="show-list-numbers-and-dots">
+      <p style="color:#000000;">Bienvenue sur Azur Connect</p>
+    </div>
+    <div id="connexion-markdown3" style="text-align:center;" class="show-list-numbers-and-dots">
+      <p style="color:#000000;">Identifiez-vous</p>
+    </div>
+    <form id="connexion-form3" class="list">
+      <label class="item item-input" id="connexion-input6">
+        <span class="input-label">Identifiant</span>
+        <input type="text" placeholder="Numéro de téléphone" data-ng-init="value.phone = 'phone'" id="phone" name="phone" ng-model="value.phone">
+      </label>
+      <label class="item item-input" id="connexion-input7">
+        <span class="input-label">Mot de Passe</span>
+        <input type="text" placeholder="Mot de passe" data-ng-init="value.mdp = 'mdp'" id="mdp" name="mdp" ng-model="value.mdp">
+      </label>
+
+        <ion-radio id="connected" name="connected" ng-model="value.radio" value="connected">Rester connecté?</ion-radio>
+
+      <a id="connexion-button1" class="button button-positive  button-block" ng-click='authClient(value);'>Se connecter</a>
+    </form>
+    <a ui-sref="inscription" id="connexion-button2" class="button button-balanced  button-block">Inscription</a>
+    <a ui-sref="clientsAzur" id="connexion-button3" class="button button-calm  button-block">Client Azur</a>
+    <a ui-sref="clientsWiFly" id="connexion-button4" class="button button-assertive  button-block">Client WiFly</a>
+  </ion-content>
+</ion-view>

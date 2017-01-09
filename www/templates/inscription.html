@@ -1,0 +1,30 @@
+<ion-view title="Inscription" id="page2">
+  <ion-content padding="true" class="has-header">
+    <div class="spacer" style="width: 300px; height: 68px;"></div>
+    <div id="inscription-markdown4" style="text-align:center;" class="show-list-numbers-and-dots">
+      <p style="color:#000000;font-size:27px;">Inscrivez-vous</p>
+    </div>
+    <form id="inscription-form4" class="list">
+      <div class="spacer" style="width: 300px; height: 72px;"></div>
+      <ion-list id="inscription-list1">
+        <label class="item item-input" id="inscription-input8">
+          <span class="input-label">Nom</span>
+          <input type="text" placeholder="" id="name" name="name" ng-model="value.name">
+        </label>
+        <label class="item item-input" id="inscription-input9">
+          <span class="input-label">Prénom</span>
+          <input type="text" placeholder="" id="lastname" name="lastname" ng-model="value.lastname">
+        </label>
+        <label class="item item-input" id="inscription-input10">
+          <span class="input-label">Email</span>
+          <input type="email" placeholder="" id="email" name="email" ng-model="value.email">
+        </label>
+        <label class="item item-input" id="inscription-input11">
+          <span class="input-label">Téléphone</span>
+          <input type="text" placeholder="" id="phone" name="phone" ng-model="value.phone">
+        </label>
+      </ion-list>
+      <button id="inscription-button5" class="button button-dark  button-block" ng-model="register" ng-click='registerClient(value);'>Inscription</button>
+    </form>
+  </ion-content>
+</ion-view>

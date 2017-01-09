@@ -1,0 +1,10 @@
+{
+  "name": "azur-connect",
+  "app_id": "",
+  "proxies": [
+    {
+      "path": "/deleg/api_admin_deleg.php",
+      "proxyUrl": "http://controller.access.network/deleg/api_admin_deleg.php"
+    }
+  ]
+}

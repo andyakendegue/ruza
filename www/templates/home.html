@@ -1,0 +1,41 @@
+<ion-view title="Accueil" id="page3">
+  <ion-nav-buttons side="right">
+    <button class="button" icon="ion-power" ng-click="logout()">
+      <i class="icon ion-power"></i>
+    </button>
+  </ion-nav-buttons>
+  <ion-content padding="true">
+    <div id="home-markdown7" class="show-list-numbers-and-dots">
+      <p style="color:#000000;">Récapitulatif des informations UCOPIA</p>
+    </div>
+    <div class="list card">
+      <a class="item item-icon-left" ng-if="useruserName">
+        <i class="icon ion-home"></i>
+        {{ useruserName }}
+      </a>
+      <a class="item item-icon-left" ng-if="userProfile">
+        <i class="icon ion-home"></i>
+        {{ userProfile }}
+      </a>
+      <a class="item item-icon-left" ng-if="userautoDisconnect">
+        <i class="icon ion-home"></i>
+        {{ userautoDisconnect }}
+      </a>
+
+      <a class="item item-icon-left" ng-if="userValidity">
+        <i class="icon ion-ios-telephone"></i>
+        {{ userValidity }}
+      </a>
+      <a class="item item-icon-left" ng-if="userTimeremain">
+        <i class="icon ion-home"></i>
+        {{ userTimeremain }}
+      </a>
+
+
+
+    </div>
+    <a ui-sref="sLectionDuForfait" id="home-button6" class="button button-assertive  button-block">Charger mon compte</a>
+    <a ui-sref="sLectionDuForfait" id="home-button7" class="button button-balanced  button-block">Consulter Compte</a>
+
+  </ion-content>
+</ion-view>

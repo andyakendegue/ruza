@@ -1,0 +1,33 @@
+<ion-view title="Sélection du forfait" id="page5">
+  <ion-nav-buttons side="right">
+    <button class="button" icon="ion-power" ng-click="logout()">
+      <i class="icon ion-power"></i>
+    </button>
+  </ion-nav-buttons>
+  <ion-content padding="true" class="has-header">
+    <div class="spacer" style="width: 300px; height: 50px;"></div>
+    <div id="sLectionDuForfait-markdown8" style="text-align:center;" class="show-list-numbers-and-dots">
+      <p style="color:#000000;font-size:24px;">Sélectionnez un forfait</p>
+    </div>
+    <div class="spacer" style="width: 300px; height: 44px;"></div>
+    <form id="sLectionDuForfait-form6" class="list">
+      <label class="item item-select" id="sLectionDuForfait-select1">
+        <span class="input-label">Forfait</span>
+        <select name="selectForfait" id="selectForfait" ng-model="value.selectforfait" required>
+
+          <option ng-repeat="forfait in forfaits" value="{{forfait.id}}">{{forfait.label}}</option>
+        </select>
+      </label>
+      <div class="spacer" style="width: 300px; height: 15px;"></div>
+      <div id="sLectionDuForfait-markdown9" style="text-align:center;" class="show-list-numbers-and-dots">
+        <p style="color:#000000;">Sélectionnez un porte-monnaie</p>
+      </div>
+      <div class="spacer" style="width: 300px; height: 17px;"></div>
+      <ion-radio id="sLectionDuForfait-radio12" ng-model="value.radio" value="azur">AZUR Money</ion-radio>
+      <ion-radio id="sLectionDuForfait-radio9" ng-model="value.radio" value="bgfi">BGFI Mobile</ion-radio>
+      <ion-radio id="sLectionDuForfait-radio10" ng-model="value.radio" value="airtel">AIRTEL Money</ion-radio>
+      <ion-radio id="sLectionDuForfait-radio11" ng-model="value.radio" value="flooz">FLOOZ</ion-radio>
+      <button id="sLectionDuForfait-button7" class="button button-assertive  button-block" ng-click='selectForfait(value);'>Acheter le forfait</button>
+    </form>
+  </ion-content>
+</ion-view>

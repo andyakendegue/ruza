@@ -1,0 +1,21 @@
+<ion-view title="BGFI2" id="page7">
+  <ion-nav-buttons side="right">
+    <button class="button" icon="ion-power" ng-click="logout()">
+      <i class="icon ion-power"></i>
+    </button>
+  </ion-nav-buttons>
+  <ion-content padding="true" class="has-header">
+    <div class="spacer" style="height: 30px;"></div>
+    <div id="bGFI2-markdown11" style="text-align:center;" class="show-list-numbers-and-dots">
+      <p style="color:#000000;font-size:16px;">Validez l'achat dans l'application mobile de BGFI et saisissez le webcode transmis</p>
+    </div>
+    <div class="spacer" style="height: 30px;"></div>
+    <form id="bGFI2-form8" class="list">
+      <label class="item item-input" id="bGFI2-input16">
+        <span class="input-label">Webcode</span>
+        <input type="text" placeholder="" data-ng-init="value.webcode = 'webcode'" id="webcode" name="webcode" ng-model="value.webcode">
+      </label>
+      <button id="bGFI2-button9" class="button button-positive  button-block" ng-click='webcodeBGFI(value);'>Payer!</button>
+    </form>
+  </ion-content>
+</ion-view>

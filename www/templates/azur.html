@@ -1,0 +1,25 @@
+<ion-view title="AZUR" id="page16">
+  <ion-nav-buttons side="right">
+    <button class="button" icon="ion-power" ng-click="logout()">
+      <i class="icon ion-power"></i>
+    </button>
+  </ion-nav-buttons>
+  <ion-content padding="true" class="has-header">
+    <div class="spacer" style="height: 30px;"></div>
+    <div id="azur-markdown15" style="text-align:center;" class="show-list-numbers-and-dots">
+      <p style="color:#000000;font-size:16px;">Saisissez les informations de votre compte FLOOZ</p>
+    </div>
+    <form id="flooz-form12" class="list">
+      <div class="spacer" style="height: 30px;"></div>
+      <label class="item item-input" id="azur-input21">
+        <span class="input-label">Téléphone</span>
+        <input type="text" placeholder="" data-ng-init="value.phone = 'phone'" id="phone" name="phone" ng-model="value.phone">
+      </label>
+      <label class="item item-input" id="azur-input22">
+        <span class="input-label">Code secret</span>
+        <input type="text" placeholder="" data-ng-init="value.secret = 'code secret'" id="secret" name="secret" ng-model="value.secret">
+      </label>
+      <button id="azur-button13" class="button button-assertive  button-block" ng-click='fluxAZUR(value);'>Payer !</button>
+    </form>
+  </ion-content>
+</ion-view>

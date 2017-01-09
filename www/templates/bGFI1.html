@@ -1,0 +1,21 @@
+<ion-view title="BGFI1" id="page6">
+  <ion-nav-buttons side="right">
+    <button class="button" icon="ion-power" ng-click="logout()">
+      <i class="icon ion-power"></i>
+    </button>
+  </ion-nav-buttons>
+  <ion-content padding="true" class="has-header">
+    <div class="spacer" style="height: 30px;"></div>
+    <div id="bGFI1-markdown10" class="show-list-numbers-and-dots">
+      <p style="color:#000000;font-size:16px;">Saisissez vos informations de compte BGFI Mobile</p>
+    </div>
+    <div class="spacer" style="width: 300px; height: 30px;"></div>
+    <form id="bGFI1-form7" class="list">
+      <label class="item item-input" id="bGFI1-input15">
+        <span class="input-label">Téléphone</span>
+        <input type="text" placeholder="" data-ng-init="value.phone = 'phone'" id="phone" name="phone" ng-model="value.phone">
+      </label>
+      <button id="bGFI1-button8" class="button button-assertive  button-block" ng-click='phoneBGFI(value);'>Envoyez la demande !</button>
+    </form>
+  </ion-content>
+</ion-view>
