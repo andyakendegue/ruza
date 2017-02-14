@@ -5,17 +5,58 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives','app.services',])
+angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives','app.services', "ngCordova"])
 
-.config(function($ionicConfigProvider, $sceDelegateProvider){
+.config(function($httpProvider,$ionicConfigProvider, $sceDelegateProvider){
 
-
+  $httpProvider.defaults.headers.common = {};
+  $httpProvider.defaults.headers.post = {};
+  $httpProvider.defaults.headers.put = {};
+  $httpProvider.defaults.headers.patch = {};
   $sceDelegateProvider.resourceUrlWhitelist([ 'self','*://www.youtube.com/**', '*://player.vimeo.com/video/**']);
 
 })
+    .filter('split', function() {
+        return function(input, splitChar, splitIndex) {
+            // do some bounds checking here to ensure it has that index
+            return input.split(splitChar)[splitIndex];
+        }
+    })
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $ionicPopup) {
   $ionicPlatform.ready(function() {
+
+      // Test Connection Start
+      if(window.Connection) {
+          if(navigator.connection.type == Connection.NONE) {
+              $ionicPopup.confirm({
+                  title: "Aucune connection internet",
+                  content: "Il n'y a aucune connexion internet sur votre téléphone."
+              })
+                  .then(function(result) {
+                      if(!result) {
+                          ionic.Platform.exitApp();
+                      }
+                  });
+          }
+      }
+      if(window.Connection) {
+          if(navigator.connection.type != Connection.WIFI) {
+              $ionicPopup.confirm({
+                  title: "Pas de WIFI",
+                  content: "Vous n'êtes pas connecté à un réseau WIFI."
+              })
+                  .then(function(result) {
+                      if(!result) {
+                          ionic.Platform.exitApp();
+                      }
+                  });
+          }
+      }
+
+      // Test connection End
+
+
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
     if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
@@ -26,6 +67,23 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+
+      // Add Local notifications start
+/*
+      window.cordova.plugins.notification.local.onadd = function (id, state, json) {
+          var notification = {
+              id: id,
+              state: state,
+              json: json
+          };
+          $timeout(function() {
+              $rootScope.$broadcast("$cordovaLocalNotification:added", notification);
+          });
+      };
+
+      */
+
+      // Add local notifications end
   });
 })
 
