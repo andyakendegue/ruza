@@ -4,7 +4,7 @@ angular.module('app.controllers', [])
 .controller('connexionCtrl', ['$scope', '$http', '$stateParams',  '$state', '$ionicPopup', '$ionicLoading','$cordovaLocalNotification','$ionicPlatform', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $http, $stateParams, $state, $ionicPopup, $ionicLoading,$cordovaLocalNotification,$ionicPlatform) {
+function ($scope, $http, $stateParams, $state, $ionicPopup, $ionicLoading,$cordovaLocalNotification, $ionicPlatform) {
 
     //Notifications Start
     $scope.add = function() {
@@ -310,7 +310,13 @@ function ($scope, $http, $stateParams, $state, $ionicLoading, $ionicPopup) {
 
       //var url = 'https://controller.access.network/portal_api.php?action=subscribe&type=one&user_login='+value.phone+'&last_name='+value.name+'&first_name='+value.lastname+'&email_address='+value.email+'&phone_number='+value.phone+'&connect_policy_accept=true&policy_accept=true';
 
-      var url = 'https://controller.access.network/deleg/api_admin_deleg.php?deleg_id=andy&deleg_pwd=andy&action=adduser&user_id='+value.phone+'&user_pwd=capp&user_grp=test&user_lastname='+value.name+'&user_firstname='+value.lastname+'&user_email='+value.email+'&user_phonenumber='+value.phone;
+        var nom = value.name;
+        var prenom = value.lastname;
+        var phoneNumber = value.phone;
+        var email = value.email;
+        var mdp = randomStr(8);
+
+        var url = 'https://controller.access.network/deleg/api_admin_deleg.php?deleg_id=andy&deleg_pwd=andy&action=adduser&user_id='+value.phone+'&user_pwd='+mdp+'&user_grp=test&user_lastname='+value.name+'&user_firstname='+value.lastname+'&user_email='+value.email+'&user_phonenumber='+value.phone;
 
       $http.get(url, {headers: {'Accept':'*/*',
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit (KHTML, like Gecko) Chrome Safari',
@@ -336,6 +342,56 @@ function ($scope, $http, $stateParams, $state, $ionicLoading, $ionicPopup) {
             }
             else
             {
+                // Envoi du SMS
+
+                // Initialisation des variables du message
+                var from = "HotSpot AZUR-WIFLY";
+                var text = "Vous avez enregistré votre compte avec succès. \n Voici vos informations personnelles : \n Votre nom : "+nom+"\n Votre prénom : "+prenom+"\n Votre adresse Email : "+email+"\n Votre mot de passe : "+mdp+"\n L\'équipe d\'Azur-Wifly vous souhaites une bon surf sur ses HotSpot.";
+
+
+
+
+
+
+                // Test pour vérifier si c'est un numéro azur
+                var pref = phoneNumber.split('');
+
+
+                if (pref[1]== '3') {
+                      var urlSmsc = 'http://144.217.80.224:13002/cgi-bin/sendsms?smsc=smsc1&from='+from+'&username=capp&password=musobase&to='+phoneNumber+'&text='+text;
+                    
+                    //Envoi du texto directement via le SMSC
+                    $http.get(urlSmsc, {headers: {'Accept':'*/*',
+                        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit (KHTML, like Gecko) Chrome Safari',
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
+                        'Access-Control-Max-Age': '3600',
+                        'Access-Control-Allow-Headers': 'x-requested-with,origin,content-type,accept,X-XSRF-TOKEN',
+                        'Access-Control-Allow-Credentials': 'true'}}
+                    ).success(function(data) {
+
+                    }).error(function(data, status) {
+                        $ionicLoading.hide().then(function(){
+                            console.log("The loading indicator is now hidden");
+                        });
+                        //$scope.errors.push(status);
+                        // An alert dialog
+                        $ionicPopup.alert({
+                            title: 'Il y a eu un problème!',
+                            template: data
+                        });
+                        console.log(status);
+                    });
+
+
+                } else {
+                    // Envoi par un autre moyen
+                }
+
+
+                
+
+                // Lancer la vue Home
                 $state.go('home');
             }
         }).error(function(data, status) {
@@ -738,13 +794,84 @@ function ($scope, $stateParams, $http, $state, $ionicPopup, $ionicLoading) {
 
             sessionStorage.setItem("forfait",value.selectforfait);
             //sessionStorage.setItem("montant",value.selectforfait);
+            var prix = sessionStorage.forfait;
+            var prix_parse = prix.split(",");
+            //console.log(prix_parse[1]);
+
+            sessionStorage.setItem("montant",prix_parse[1]);
+            sessionStorage.setItem("forfait_id",prix_parse[0]);
 
             switch (value.radio) {
 
                 case "azur":
-                    $state.go("azur");
+                    /*$state.go("azur");
                     console.log("azur");
-                    sessionStorage.setItem("portefeuille","azur");
+                    sessionStorage.setItem("portefeuille","azur");*/
+                    $ionicLoading.show({
+                        template: 'Connexion...'
+                    }).then(function(){
+                        console.log("The loading indicator is now displayed");
+                    });
+
+
+
+
+                    var url = 'http://144.217.80.224/service/soap/client-azur.php?montant='+sessionStorage.montant+'&transaction=debit';
+
+                    $http.get(url, {
+                        headers: {
+                            'Accept': '*/*',
+                            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit (KHTML, like Gecko) Chrome Safari',
+                            'Access-Control-Allow-Origin': '*',
+                            'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
+                            'Access-Control-Max-Age': '3600',
+                            'Access-Control-Allow-Headers': 'x-requested-with,origin,content-type,accept,X-XSRF-TOKEN',
+                            'Access-Control-Allow-Credentials': 'true'
+                        }
+                    }).success(function (data) {
+
+                        $ionicLoading.hide().then(function(){
+                            console.log("The loading indicator is now hidden");
+                        });
+
+                        console.log(data);
+
+                        if (typeof data.soapenvBody.ns9createSubscriptionTransactionResponse  != "undefined") {
+                            //noinspection JSAnnotator
+                            sessionStorage.setItem('accountId',data.soapenvBody.ns9createSubscriptionTransactionResponse.ns9return.ns3accountID);
+                            //noinspection JSAnnotator
+                            sessionStorage.setItem('amount', data.soapenvBody.ns9createSubscriptionTransactionResponse.ns9return.ns3amount);
+                            //noinspection JSAnnotator
+                            sessionStorage.setItem('balance', data.soapenvBody.ns9createSubscriptionTransactionResponse.ns9return.ns3balance);
+
+                            //
+                        } else {
+                            $ionicLoading.hide().then(function(){
+                                console.log("The loading indicator is now hidden");
+                            });
+                            console.log('Une erreur est survenue. Votre solde est insufisant. \nVeuillez recharger votre compte !');
+                            //if ()
+                            $ionicPopup.alert({
+                                title: 'une erreur est survenue',
+                                template: data
+                            });
+
+                        }
+
+                        // console.log('ok'+data);
+
+                    }).error(function (data, status) {
+                        $ionicLoading.hide().then(function(){
+                            console.log("The loading indicator is now hidden");
+                        });
+                        console.log('une erreur est survenue' + data);
+                        $ionicPopup.alert({
+                            title: 'une erreur est survenue',
+                            template: data
+                        });
+
+
+                    });
                     break;
                 case "bgfi":
                     $state.go("bgfi1");
@@ -839,12 +966,6 @@ function ($scope, $http, $stateParams, $state, $ionicPopup, $ionicLoading) {
 
     };
 
-    var prix = sessionStorage.forfait;
-    var prix_parse = prix.split(",");
-    //console.log(prix_parse[1]);
-
-    sessionStorage.setItem("montant",prix_parse[1]);
-    sessionStorage.setItem("forfait_id",prix_parse[0]);
 
     console.log(sessionStorage.montant);
     console.log(sessionStorage.forfait_id);
@@ -1525,118 +1646,9 @@ function ($scope, $http, $stateParams, $state, $ionicPopup, $ionicLoading) {
 
 
             };
-            $scope.fluxAZUR = function(value) {
-                var url1 = 'http://ilink-app.com/login_web_service.php';
-                var url2 = 'http://ilink-app.com/transaction_web_service.php';
-                var username = 'cfao';
-                var mdp = 'cfao';
-
-
-                if (value.phone=="phone") {
-                    // An alert dialog
-                    $ionicPopup.alert({
-                        title: 'Il y a eu un problème!',
-                        template: "Vous n'avez pas entré de numéro de téléphone"
-                    });
-
-
-                } else  {
-                    if (value.secret=="code secret") {
-                        // An alert dialog
-                        $ionicPopup.alert({
-                            title: 'Il y a eu un problème!',
-                            template: "Vous n'avez pas entré de mot de passe"
-                        });
-                    } else {
-
-                        $ionicLoading.show({
-                            template: 'Transaction en cours...'
-                        }).then(function(){
-                            console.log("The loading indicator is now displayed");
-                        });
-
-                        // Récupération d'un token
-                        $http.post(url1,
-                            {'username': username, 'mdp': mdp}
-                        ).success(function (data) {
-
-                            //console.log(data);
-                            if (data.error_code === 1) {
-                                $ionicLoading.hide().then(function(){
-                                    console.log("The loading indicator is now hidden");
-                                });
-                                // An alert dialog
-                                $ionicPopup.alert({
-                                    title: 'Il y a eu un problème!',
-                                    template: data.status
-                                });
-
-                            }
-                            else {
-                                sessionStorage.setItem("token", data.token);
-
-                                $http.post(url2,
-                                    {'token':sessionStorage.token,'phone':value.phone, 'mdp':value.secret, 'produit':'forfait','montant':sessionStorage.forfait}
-                                ).success(function(data) {
-                                    $ionicLoading.hide().then(function(){
-                                        console.log("The loading indicator is now hidden");
-                                    });
-                                    //console.log(data);
-                                    if (data.error_code === 1)
-                                    {
-                                        // An alert dialog
-                                        $ionicPopup.alert({
-                                            title: 'Il y a eu un problème!',
-                                            template: data.status
-                                        });
-
-
-
-
-                                        //popupalert.show();
-                                        console.log(data);
-                                    }
-                                    else
-                                    {
-                                        $state.go('home');
-                                    }
-                                }).error(function(data, status) {
-                                    $ionicLoading.hide().then(function(){
-                                        console.log("The loading indicator is now hidden");
-                                    });
-
-                                    //$scope.errors.push(status);
-                                    // An alert dialog
-                                    $ionicPopup.alert({
-                                        title: 'Il y a eu un problème!',
-                                        template: status
-                                    });
-                                    console.log(status);
-                                });
-
-
-
-
-                            }
-
-                        }).error(function (data, status) {
-                            $ionicLoading.hide().then(function(){
-                                console.log("The loading indicator is now hidden");
-                            });
-                            //$scope.errors.push(status);
-                            // An alert dialog
-                            $ionicPopup.alert({
-                                title: 'Il y a eu un problème!',
-                                template: status
-                            });
-                            console.log(status);
-                        });
-
-                    }
-                }
-
-            };
-
+            $scope.accountId = sessionStorage.accountId;
+            $scope.amount = sessionStorage.amount/100;
+            $scope.balance = sessionStorage.balance/100;
 
         }])
 
