@@ -137,11 +137,12 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives
     }
   };
 });
-
+/*
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   .constant('ApiEndpoint', {
     url: 'http://192.168.104.58:8100/'
   });
+  */
 // For the real endpoint, we'd use this
 // .constant('ApiEndpoint', {
 //  url: 'http://cors.api.com/api'

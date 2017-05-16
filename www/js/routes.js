@@ -64,11 +64,7 @@ angular.module('app.routes', [])
     controller: 'clientsAzurCtrl'
   })
 
-  .state('clientsWiFly', {
-    url: '/page15',
-    templateUrl: 'templates/clientsWiFly.html',
-    controller: 'clientsWiFlyCtrl'
-  })
+
       .state('azur', {
         url: '/page16',
         templateUrl: 'templates/fLOOZ.html',

@@ -12,11 +12,11 @@
     <form id="connexion-form3" class="list">
       <label class="item item-input" id="connexion-input6">
         <span class="input-label">Identifiant</span>
-        <input type="text" placeholder="Numéro de téléphone" data-ng-init="value.phone = 'phone'" id="phone" name="phone" ng-model="value.phone">
+        <input type="text" placeholder="Numéro de téléphone"  id="phone" name="phone" ng-model="value.phone">
       </label>
       <label class="item item-input" id="connexion-input7">
         <span class="input-label">Mot de Passe</span>
-        <input type="password" placeholder="Mot de passe" data-ng-init="value.mdp = 'mdp'" id="mdp" name="mdp" ng-model="value.mdp">
+        <input type="password" placeholder="Mot de passe"  id="mdp" name="mdp" ng-model="value.mdp">
       </label>
 
         <ion-checkbox id="connected" name="connected" ng-model="value.radio" ng-checked="value.checked">Enregistrer vos identifiants?</ion-checkbox>
@@ -24,7 +24,7 @@
       <a id="connexion-button1" class="button button-positive  button-block" ng-click='authClient(value);'>Connexion</a>
     </form>
     <a ui-sref="inscription" id="connexion-button2" class="button button-balanced  button-block">Enregistrement</a>
-    <!--<a ui-sref="clientsAzur" id="connexion-button3" class="button button-calm  button-block">Client Azur</a>
+    <!--<a ui-sref="clientsAzur" id="connexion-button3" class="button but  ton-calm  button-block">Client Azur</a>
     <a ui-sref="clientsWiFly" id="connexion-button4" class="button button-assertive  button-block">Client WiFly</a>
     <button class="button" ng-click="add()">Add notification</button>
     <button class="button" ng-click="isScheduled()">Is Scheduled</button>-->

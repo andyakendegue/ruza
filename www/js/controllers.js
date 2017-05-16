@@ -1,367 +1,244 @@
+/**
+ * Projet Azur Wifly
+ * CFAO Techologies
+ *
+ * Créé par Capp Andy MIGOUMBI AKENDENGUE
+ *
+ * Controlleur Général des vues
+ */
+
 angular.module('app.controllers', [])
 
-
-.controller('connexionCtrl', ['$scope', '$http', '$stateParams',  '$state', '$ionicPopup', '$ionicLoading','$cordovaLocalNotification','$ionicPlatform', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
+    /*
+    * Écran de connexion des utilisateurs
+    */
+.controller('connexionCtrl', ['$scope', '$http', '$stateParams',  '$state', '$ionicPopup', '$ionicLoading',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
 // You can include any angular dependencies as parameters for this function
 // TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $http, $stateParams, $state, $ionicPopup, $ionicLoading,$cordovaLocalNotification, $ionicPlatform) {
-
-    //Notifications Start
-    $scope.add = function() {
-        var alarmTime = new Date();
-        alarmTime.setMinutes(alarmTime.getMinutes() + 1);
-        $cordovaLocalNotification.add({
-            id: "1234",
-            date: alarmTime,
-            message: "This is a message",
-            title: "This is a title",
-            autoCancel: true,
-            sound: null
-        }).then(function () {
-            console.log("The notification has been set");
-        });
-    };
-
-    $scope.isScheduled = function() {
-        $cordovaLocalNotification.isScheduled("1234").then(function(isScheduled) {
-            alert("Notification 1234 Scheduled: " + isScheduled);
-        });
-    };
-    /*
-    $ionicPlatform.ready(function() {
-        if(device.platform === "iOS") {
-            window.plugin.notification.local.promptForPermission();
-        }
-    });
-    */
-
-    $scope.$on("$cordovaLocalNotification:added", function(id, state, json) {
-        alert("Added a notification");
-    });
+function ($scope, $http, $stateParams, $state, $ionicPopup, $ionicLoading) {
 
 
-    // Notifications End
-
-    if(sessionStorage.connected == "true") {
-
+    if(sessionStorage.registered == "true") {
+		//objUser.loginRegistered(sessionStorage.phone,sessionStorage.mdp);
+        // Affichage de la fenêtre d'attente
         $ionicLoading.show({
             template: 'Connexion...'
         }).then(function(){
-            console.log("The loading indicator is now displayed");
-        });
-      var url = 'https://controller.access.network/portal_api.php?action=authenticate&login='+sessionStorage.phone+'&password='+sessionStorage.mdp;
-
-      $http.get(url, {headers: {'Accept':'*/*',
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit (KHTML, like Gecko) Chrome Safari',
-          'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
-      'Access-Control-Max-Age': '3600',
-      'Access-Control-Allow-Headers': 'x-requested-with,origin,content-type,accept,X-XSRF-TOKEN',
-      'Access-Control-Allow-Credentials': 'true'}}
-      ).success(function(data) {
-            $ionicLoading.hide().then(function(){
-                console.log("The loading indicator is now hidden");
-            });
-            //console.log(data);
-        var desData = angular.fromJson(data);
-        if (desData.error)
-        {
-          // An alert dialog
-          $ionicPopup.alert({
-            title: 'Il y a eu une erreur!',
-            template: desData.error.code
-          });
-
-        }
-            else
-            {
-              var userInfo =angular.fromJson(desData.user);
-
-              // stay connected?"
-              sessionStorage.setItem("connected","false");
-
-              // User Info
-              sessionStorage.setItem("phone",userInfo.login.value );
-
-              // Sauvegarde du profil/forfait
-              sessionStorage.setItem("profile_id",userInfo.profile.id);
-              sessionStorage.setItem("profile_value",userInfo.profile.value);
-
-              // Sauvegarde option deconnexion auto
-              sessionStorage.setItem("autodisconnect",userInfo.autoDisconnect.value);
-
-              // Sauvegarde validité profil
-              /* Début */
-              /*sessionStorage.setItem("schedule_begin_day",userInfo.schedule.begin.day);
-               sessionStorage.setItem("schedule_begin_hour",userInfo.schedule.begin.hour);
-               sessionStorage.setItem("schedule_begin_day",userInfo.schedule.begin.min);
-               */
-              sessionStorage.setItem("schedule_begin_day",userInfo.schedule.begin);
-
-              /* Fin */
-
-              /*
-               sessionStorage.setItem("schedule_end_day",userInfo.schedule.end.day);
-               sessionStorage.setItem("schedule_end_hour",userInfo.schedule.end.hour);
-               sessionStorage.setItem("schedule_end_day",userInfo.schedule.end.min);
-               */
-              sessionStorage.setItem("schedule_end_day",userInfo.schedule.value[0].begin.day);
-
-              // Validité
-              sessionStorage.setItem("validity",userInfo.validity.value);
-
-              // Initialisation du temps de la nouvelle connexion
-              sessionStorage.setItem("init_time",userInfo.initTimeGMT.value);
-
-              // Crédit temps
-              sessionStorage.setItem("time_credit_value",userInfo.timeCredit);
-              //sessionStorage.setItem("time_credit_remaining_value",userInfo.timeCredit.remaining);
-              //sessionStorage.setItem("time_credit_reneweach_value",userInfo.timeCredit.reneweach);
-              //sessionStorage.setItem("time_credit_initialremaining_value",userInfo.timeCredit.initialRemaining);
-
-              // Informations utilisateurs
-              sessionStorage.setItem("user_lastname",userInfo.lastName);
-              sessionStorage.setItem("user_firstname",userInfo.firstName);
-              sessionStorage.setItem("user_email",userInfo.email);
-              sessionStorage.setItem("user_phone",userInfo.phoneNumber);
-
-              $state.go('home');
-              console.log(userInfo);
-            }
-        }).error(function(data, status) {
-            $ionicLoading.hide().then(function(){
-                console.log(data);
-            });
-            //$scope.errors.push(status);
-            // An alert dialog
-            $ionicPopup.alert({
-                title: 'Il y a eu un problème!',
-                template: data
-            });
-            console.log(data);
+            console.log("Connexion de l'utilisateur...");
         });
 
-    } else {
+        //Initialisation du lien de connexion
+        // Le lien est initialisé selon les recommandations du Manuel UCOPIA Portal API Version 5.1
+        var url = 'https://hotspot.azur-wifly.com/portal_api.php?action=authenticate&login='+sessionStorage.phone+'&password='+sessionStorage.mdp;
 
-        $scope.authClient = function(value) {
-            //console.log(value);
-            //var url = 'http://ilink-app.com/cfao/v1/index.php/register';
-            //var url = 'http://144.217.80.224/service/auth_ucopia.php';
+        /// Transaction REST pour connecter l'utilisateur à UCOPIA
+        $http.get(
+            url,
+            {headers: {'Accept':'*/*', 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit (KHTML, like Gecko) Chrome Safari', 'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS', 'Access-Control-Max-Age': '3600', 'Access-Control-Allow-Headers': 'x-requested-with,origin,content-type,accept,X-XSRF-TOKEN',
+                'Access-Control-Allow-Credentials': 'true'}})
+
+            // La connexion de l'utilisateur est réussie
+            .success(function(data) {
+
+                // Fermeture de la fenêtre d'attente
+                $ionicLoading.hide().then(function(){
+                    console.log("Connexion à Ucopia réussie");
+                });
+                //console.log(data);
+
+                // Récupération de la réponse JSON du MiddleWare
+                // La liste des informations renvoyées par UCOPIA se trouve dans le manuel UCOPIA Portal API Version 5.1
+                var desData = angular.fromJson(data);
+
+                // Vérification du message d'erreur
+                // Si il existe Message d'alerte à l'utilisateur
+                if (desData.error)
+                {
 
 
+                    $ionicPopup.alert({
+                        title: 'Il y a eu une erreur!',
+                        template: desData.error.code
+                    });
 
-            if (value.phone=="phone" ) {
-                // An alert dialog
+                }
+                // Si il n'y a aucun message d'erreur, enclencher une séquence pour stocker localement les informations
+                // de l'utilisateur envoyés par UCOPIA et rediriger l'utilisateur vers la page d'accueil.
+                else {
+
+                    // Récupération des informations utilisateurs
+                    var userInfo =angular.fromJson(desData.user);
+
+                    // stay connected?"
+                    //sessionStorage.setItem("registered","true");
+
+
+                    // Informations de l'utilisateur
+                    sessionStorage.setItem("phone",userInfo.login.value );
+
+                    // Sauvegarde de l'id et du libellé de l'option d'achat en vigueur
+
+                    sessionStorage.setItem("profile_id",userInfo.profile.id);
+                    sessionStorage.setItem("profile_value",userInfo.profile.value);
+
+                    // Sauvegarde de l'état de l'option deconnexion auto
+                    sessionStorage.setItem("autodisconnect",userInfo.autoDisconnect.value);
+
+
+                    // Sauvegarde durée de validité profil
+
+                    /* Début */
+
+                    sessionStorage.setItem("schedule_begin_day",userInfo.schedule.value[0].begin.day);
+
+                    sessionStorage.setItem("schedule_begin_hour",userInfo.schedule.value[0].begin.hour);
+                    sessionStorage.setItem("schedule_begin_day",userInfo.schedule.value[0].begin.min);
+
+
+                    sessionStorage.setItem("schedule_begin_day",userInfo.schedule.begin);
+
+                    /* Fin */
+
+
+                    sessionStorage.setItem("schedule_end_day",userInfo.schedule.value[0].end.day);
+                    sessionStorage.setItem("schedule_end_hour",userInfo.schedule.value[0].end.hour);
+                    sessionStorage.setItem("schedule_end_day",userInfo.schedule.value[0].end.min);
+
+
+                    sessionStorage.setItem("schedule_end_day",userInfo.schedule.value[0].begin.day);
+
+
+                    // Validité
+
+                    sessionStorage.setItem("validity",userInfo.validity.value);
+
+
+                    // Initialisation du temps de la nouvelle connexion
+
+                    sessionStorage.setItem("init_time",userInfo.initTimeGMT.value);
+
+
+                    // Crédit temps
+
+                    sessionStorage.setItem("time_credit_value",userInfo.timeCredit);
+
+                    //sessionStorage.setItem("time_credit_remaining_value",userInfo.timeCredit.remaining);
+
+                    //sessionStorage.setItem("time_credit_reneweach_value",userInfo.timeCredit.reneweach);
+
+                    //sessionStorage.setItem("time_credit_initialremaining_value",userInfo.timeCredit.initialRemaining);
+
+
+                    // Informations utilisateurs
+
+                    sessionStorage.setItem("user_lastname",userInfo.lastName);
+
+                    sessionStorage.setItem("user_firstname",userInfo.firstName);
+
+                    sessionStorage.setItem("user_email",userInfo.email);
+
+                    sessionStorage.setItem("user_phone",userInfo.phoneNumber);
+
+
+                    // Redirection de l'utilisateur vers la page d'accueil
+                    $state.go('home');
+
+                    console.log(userInfo);
+                }
+            })
+            //En cas d'erreur lors de la connexion au MiddleWare
+
+            .error(function(data, status) {
+                // Massquer la fenêtre d'attente
+                $ionicLoading.hide().then(function(){
+                    console.log(data);
+                });
+                //$scope.errors.push(status);
+                // Afficher une alerte à l'utilisateur
                 $ionicPopup.alert({
                     title: 'Il y a eu un problème!',
-                    template: "Vous n'avez pas entré de numéro de téléphone"
+                    template: data
                 });
+                console.log(data);
+            });
+
+    }
+    /// L'utilisateur n'a pas demandé à enregistrer ses identifiants.
+    // Ses identifiants sont récupérés depuis l'écran de connexion.
+    else {
+		// Début du processus d'authentification
+
+        $scope.authClient = function(value) {
+            if (value == undefined || value.phone == undefined || value.mdp == undefined) {
+                var text = "Tous les champs doivent être rempli. \n Veuillez remplir les champs vides";
+
+                $ionicPopup.alert({
+                    title: 'Il y a eu un problème!',
+                    template: text
+                })
+            } else {
+                //objUser.login(value.phone,value.mdp, value.radio);
+
+                // Vérification que l'utilisateur a bien rentré un numéro de téléphone
+                if (value.phone=="phone" ) {
 
 
-            } else  {
-                if (value.mdp=="mdp") {
+
+                    // Si rien n'est rentré alerter l'utilisateur
+                    // An alert dialog
+                    $ionicPopup.alert({
+                        title: 'Il y a eu un problème!',
+                        template: "Vous n'avez pas entré de numéro de téléphone"
+                    });
+
+
+                }
+
+                // Vérification de l'existence du mot de passe
+                else if (value.mdp=="mdp") {
+
+
+                    // Si rien n'est rentré alerter l'utilisateur
                     // An alert dialog
                     $ionicPopup.alert({
                         title: 'Il y a eu un problème!',
                         template: "Vous n'avez pas entré de mot de passe"
                     });
                 } else {
-                  sessionStorage.setItem("phone",value.phone);
 
+                    // si le téléphone et le mot de passe ont été renseigné
+
+                    // On sauvegarde ll'identifiant de l'utilisateur
+                    sessionStorage.setItem("phone",value.phone);
+
+                    // On vérifie si l'utilisateur souhaite enregistrer ses identifiants
                     if (value.radio==true) {
 
-                        sessionStorage.setItem("connected","true");
+                        // On renseigne que les informations sont enregistrées et on sauvegarde le mot de passe
+
+                        sessionStorage.setItem("registered","true");
 
                         sessionStorage.setItem("mdp",value.mdp);
 
                     }
 
+                    // On initialise la connexion à UCOPIA
+
+                    // La fenêtre d'attente
                     $ionicLoading.show({
                         template: 'Connexion...'
                     }).then(function(){
                         console.log("The loading indicator is now displayed");
                     });
-                  var url = 'https://controller.access.network/portal_api.php?action=authenticate&login='+value.phone+'&password='+value.mdp;
+
+
+                    // Le lien pour la requête REST
+                    var url = 'https://hotspot.azur-wifly.com/portal_api.php?action=authenticate&login='+id+'&password='+password;
+
+                    // Envoi de la requête en GET
 
                     $http.get(url, {headers: {'Accept':'*/*',
-                      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit (KHTML, like Gecko) Chrome Safari',
-                      'Access-Control-Allow-Origin': '*',
-                      'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
-                      'Access-Control-Max-Age': '3600',
-                      'Access-Control-Allow-Headers': 'x-requested-with,origin,content-type,accept,X-XSRF-TOKEN',
-                      'Access-Control-Allow-Credentials': 'true'}}
-                    ).success(function(data) {
-                        $ionicLoading.hide().then(function(){
-                            console.log("The loading indicator is now hidden");
-                        });
-                        //console.log(data);
-                      var desData = angular.fromJson(data);
-                        if (desData.error)
-                        {
-                            // An alert dialog
-                            $ionicPopup.alert({
-                                title: 'Il y a eu une erreur!',
-                                template: desData.error.code
-                            });
-
-                            //popupalert.show();
-                            //console.log(data);
-                        }
-                        else
-                        {
-
-
-                          var userInfo =angular.fromJson(desData.user);
-
-                          // stay connected?
-                          sessionStorage.setItem("connected","false");
-
-                          // User Info
-                          sessionStorage.setItem("phone",userInfo.login.value );
-
-                          // Sauvegarde du profil/forfait
-                          sessionStorage.setItem("profile_id",userInfo.profile.id);
-                          sessionStorage.setItem("profile_value",userInfo.profile.value);
-
-                          // Sauvegarde option deconnexion auto
-                          sessionStorage.setItem("autodisconnect",userInfo.autoDisconnect.value);
-
-                          // Sauvegarde validité profil
-                          /* Début */
-                          /*sessionStorage.setItem("schedule_begin_day",userInfo.schedule.begin.day);
-                          sessionStorage.setItem("schedule_begin_hour",userInfo.schedule.begin.hour);
-                          sessionStorage.setItem("schedule_begin_day",userInfo.schedule.begin.min);
-                          */
-                          sessionStorage.setItem("schedule_begin_day",userInfo.schedule.begin);
-
-                          /* Fin */
-
-                          /*
-                          sessionStorage.setItem("schedule_end_day",userInfo.schedule.end.day);
-                          sessionStorage.setItem("schedule_end_hour",userInfo.schedule.end.hour);
-                          sessionStorage.setItem("schedule_end_day",userInfo.schedule.end.min);
-                          */
-                          sessionStorage.setItem("schedule_end_day",userInfo.schedule.value[0].begin.day);
-
-                          // Validité
-                          sessionStorage.setItem("validity",userInfo.validity.value);
-
-                          // Initialisation du temps de la nouvelle connexion
-                          sessionStorage.setItem("init_time",userInfo.initTimeGMT.value);
-
-                          // Crédit temps
-                          sessionStorage.setItem("time_credit_value",userInfo.timeCredit);
-                          //sessionStorage.setItem("time_credit_remaining_value",userInfo.timeCredit.remaining);
-                          //sessionStorage.setItem("time_credit_reneweach_value",userInfo.timeCredit.reneweach);
-                          //sessionStorage.setItem("time_credit_initialremaining_value",userInfo.timeCredit.initialRemaining);
-
-                          // Informations utilisateurs
-                          sessionStorage.setItem("user_lastname",userInfo.lastName);
-                          sessionStorage.setItem("user_firstname",userInfo.firstName);
-                          sessionStorage.setItem("user_email",userInfo.email);
-                          sessionStorage.setItem("user_phone",userInfo.phoneNumber);
-
-                          $state.go('home');
-                          console.log(userInfo);
-                        }
-                    }).error(function(data, status) {
-                        $ionicLoading.hide().then(function(){
-                            console.log("The loading indicator is now hidden");
-                        });
-                        //$scope.errors.push(status);
-                        // An alert dialog
-                        $ionicPopup.alert({
-                            title: 'Il y a eu un problème!',
-                            template: data
-                        });
-                        console.log(data);
-                    });
-
-                }
-            }
-
-
-
-
-        };
-
-
-    }
-
-
-}])
-
-.controller('inscriptionCtrl', ['$scope', '$http', '$stateParams',  '$state',  '$ionicLoading', '$ionicPopup',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $http, $stateParams, $state, $ionicLoading, $ionicPopup) {
-
-
-    $scope.registerClient = function(value) {
-        //console.log(value);
-        //var url = 'http://ilink-app.com/cfao/v1/index.php/register';
-        //var url = 'http://144.217.80.224/service/register_ucopia.php';
-
-      $ionicLoading.show({
-            template: 'Inscription...'
-        }).then(function(){
-            console.log("The loading indicator is now displayed");
-        });
-
-      //var url = 'https://controller.access.network/portal_api.php?action=subscribe&type=one&user_login='+value.phone+'&last_name='+value.name+'&first_name='+value.lastname+'&email_address='+value.email+'&phone_number='+value.phone+'&connect_policy_accept=true&policy_accept=true';
-
-        var nom = value.name;
-        var prenom = value.lastname;
-        var phoneNumber = value.phone;
-        var email = value.email;
-        var mdp = randomStr(8);
-
-        var url = 'https://controller.access.network/deleg/api_admin_deleg.php?deleg_id=andy&deleg_pwd=andy&action=adduser&user_id='+value.phone+'&user_pwd='+mdp+'&user_grp=test&user_lastname='+value.name+'&user_firstname='+value.lastname+'&user_email='+value.email+'&user_phonenumber='+value.phone;
-
-      $http.get(url, {headers: {'Accept':'*/*',
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit (KHTML, like Gecko) Chrome Safari',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
-        'Access-Control-Max-Age': '3600',
-        'Access-Control-Allow-Headers': 'x-requested-with,origin,content-type,accept,X-XSRF-TOKEN',
-        'Access-Control-Allow-Credentials': 'true'}}
-      ).success(function(data) {
-        $ionicLoading.hide().then(function(){
-          console.log("The loading indicator is now hidden");
-        });
-        console.log(data);
-        //var desData = angular.fromJson(data);
-        var desData = data.split(':');
-        if (desData[0]!=0)
-        {
-          // An alert dialog
-          $ionicPopup.alert({
-            title: 'Il y a eu une erreur!',
-            template: desData[1]
-          });
-            }
-            else
-            {
-                // Envoi du SMS
-
-                // Initialisation des variables du message
-                var from = "HotSpot AZUR-WIFLY";
-                var text = "Vous avez enregistré votre compte avec succès. \n Voici vos informations personnelles : \n Votre nom : "+nom+"\n Votre prénom : "+prenom+"\n Votre adresse Email : "+email+"\n Votre mot de passe : "+mdp+"\n L\'équipe d\'Azur-Wifly vous souhaites une bon surf sur ses HotSpot.";
-
-
-
-
-
-
-                // Test pour vérifier si c'est un numéro azur
-                var pref = phoneNumber.split('');
-
-
-                if (pref[1]== '3') {
-                      var urlSmsc = 'http://144.217.80.224:13002/cgi-bin/sendsms?smsc=smsc1&from='+from+'&username=capp&password=musobase&to='+phoneNumber+'&text='+text;
-                    
-                    //Envoi du texto directement via le SMSC
-                    $http.get(urlSmsc, {headers: {'Accept':'*/*',
                         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit (KHTML, like Gecko) Chrome Safari',
                         'Access-Control-Allow-Origin': '*',
                         'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
@@ -370,214 +247,406 @@ function ($scope, $http, $stateParams, $state, $ionicLoading, $ionicPopup) {
                         'Access-Control-Allow-Credentials': 'true'}}
                     ).success(function(data) {
 
-                    }).error(function(data, status) {
-                        $ionicLoading.hide().then(function(){
-                            console.log("The loading indicator is now hidden");
+                            // La requête a été transmise on ferme la fenêtre d'attentes
+                            $ionicLoading.hide().then(function(){
+                                console.log("The loading indicator is now hidden");
+                            });
+                            //console.log(data);
+
+                            // On vérifie que l'opération n'a pas d'erreur
+                            var desData = angular.fromJson(data);
+                            if (desData.error)
+                            {
+                                // Une erreur s'est produite au niveau d'UCOPIA
+                                // An alert dialog
+                                $ionicPopup.alert({
+                                    title: 'Il y a eu une erreur!',
+                                    template: desData.error.code
+                                });
+
+                                //popupalert.show();
+                                //console.log(data);
+                            }
+                            else
+                            {
+
+
+
+                                // Il n'y a eu aucune erreur au niveau d'UCOPIA et nous avons reçu un objet avec des informations
+
+
+                                try {
+                                    // On récupère dans l'objet les informations de l'utilisateur
+                                    var userInfo =angular.fromJson(desData.user);
+
+                                    // stay connected?
+                                    sessionStorage.setItem("registered","false");
+
+                                    // User Info
+                                    sessionStorage.setItem("phone",userInfo.login.value );
+
+                                    // Sauvegarde du profil/forfait
+                                    sessionStorage.setItem("profile_id",userInfo.profile.id);
+                                    sessionStorage.setItem("profile_value",userInfo.profile.value);
+
+                                    // Sauvegarde option deconnexion auto
+                                    sessionStorage.setItem("autodisconnect",userInfo.autoDisconnect.value);
+
+                                    // Sauvegarde validité profil
+                                    /* Début */
+                                    /*sessionStorage.setItem("schedule_begin_day",userInfo.schedule.begin.day);
+                                     sessionStorage.setItem("schedule_begin_hour",userInfo.schedule.begin.hour);
+                                     sessionStorage.setItem("schedule_begin_day",userInfo.schedule.begin.min);
+                                     */
+                                    sessionStorage.setItem("schedule_begin_day",userInfo.schedule.begin);
+
+                                    /* Fin */
+                                    /*
+                                     sessionStorage.setItem("schedule_end_day",userInfo.schedule.end.day);
+                                     sessionStorage.setItem("schedule_end_hour",userInfo.schedule.end.hour);
+                                     sessionStorage.setItem("schedule_end_day",userInfo.schedule.end.min);
+                                     */
+                                    sessionStorage.setItem("schedule_end_day",userInfo.schedule.value[0].begin.day);
+
+                                    // Validité
+                                    sessionStorage.setItem("validity",userInfo.validity.value);
+
+                                    // Initialisation du temps de la nouvelle connexion
+                                    sessionStorage.setItem("init_time",userInfo.initTimeGMT.value);
+
+                                    // Crédit temps
+                                    sessionStorage.setItem("time_credit_value",userInfo.timeCredit);
+                                    //sessionStorage.setItem("time_credit_remaining_value",userInfo.timeCredit.remaining);
+                                    //sessionStorage.setItem("time_credit_reneweach_value",userInfo.timeCredit.reneweach);
+                                    //sessionStorage.setItem("time_credit_initialremaining_value",userInfo.timeCredit.initialRemaining);
+
+                                    // Informations utilisateurs
+                                    sessionStorage.setItem("user_lastname",userInfo.lastName);
+                                    sessionStorage.setItem("user_firstname",userInfo.firstName);
+                                    sessionStorage.setItem("user_email",userInfo.email);
+                                    sessionStorage.setItem("user_phone",userInfo.phoneNumber);
+
+                                }
+                                catch (ex) {
+                                    // Une erreur s'est produite en enregistrant les données
+                                    console.error('inner', ex.message);
+                                    throw ex;
+                                }
+                                finally {
+                                    // L'utilisateur est redirigé vers la page d'accueil
+                                    $state.go('home');
+                                    console.log(userInfo);
+                                    //console.log('finally');
+                                }
+
+                            }
+                        })
+                        // La requête n'a pas pu être envoyée et a retourné une erreur
+
+                        .error(function(data, status) {
+                            // On masque la fenêtre d'attente
+
+                            $ionicLoading.hide().then(function(){
+
+                                console.log("The loading indicator is now hidden");
+
+                            });
+
+                            //$scope.errors.push(status);
+                            // On affiche une fenêtre pour alerter l'utilisateur sur l'erreur
+
+
+                            // An alert dialog
+
+                            $ionicPopup.alert({
+
+                                title: 'Il y a eu un problème!',
+                                template: 'Nous n\'avons pas pu vous connecter'
+
+                            });
+                            console.log(data);
                         });
-                        //$scope.errors.push(status);
-                        // An alert dialog
+                }
+            }
+
+		}        
+	}
+    
+}])
+
+/*
+ * Écran d'inscription des utilisateurs
+ */
+
+    .controller('inscriptionCtrl', ['$scope', '$http', '$stateParams',  '$state',  '$ionicLoading', '$ionicPopup', 'randomString','objUser',
+function ($scope, $http, $stateParams, $state, $ionicLoading, $ionicPopup, randomString, objUser) {
+// L'utilisateur lance le processus d'inscription
+    $scope.registerClient = function(value) {
+        if (value == undefined || value.name == undefined || value.lastname == undefined || value.phone == undefined && value.email == undefined) {
+            var text = "Tous les champs doivent être rempli. \n Veuillez remplir les champs vides";
+
+            $ionicPopup.alert({
+                title: 'Il y a eu un problème!',
+                template: text
+            })
+        } else {
+                // On stocke les informations renseignées par l'utilisateur dans des variables
+                var nom = value.name;
+                var prenom = value.lastname;
+                var phoneNumber = value.phone;
+                var email = value.email;
+                var mdp = randomString.random(8);
+                localStorage.setItem("mdp", mdp);
+                // On enregistre le client
+                //objUser.register(nom, prenom,phoneNumber,email,mdp);
+            // Une fenêtre d'attente est ouverte pour faire patienter l'utilisateur
+            $ionicLoading.show({
+                template: 'Inscription...'
+            }).then(function(){
+                console.log("Inscription en cours...");
+            });
+
+
+
+
+
+            // On initialise le lien de connexion à UCOPIA
+            var url = 'https://hotspot.azur-wifly.com/deleg/api_admin_deleg.php?deleg_id=andy&deleg_pwd=andy&action=adduser&user_id='+phoneNumber+'&user_pwd='+mdp+'&user_grp=test&user_lastname='+nom+'&user_firstname='+prenom+'&user_email='+email+'&user_phonenumber='+phoneNumber;
+
+
+            // On lance la requête d'inscription en GET
+            $http.get(url, {headers: {'Accept':'*/*',
+                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit (KHTML, like Gecko) Chrome Safari',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
+                    'Access-Control-Max-Age': '3600',
+                    'Access-Control-Allow-Headers': 'x-requested-with,origin,content-type,accept,X-XSRF-TOKEN',
+                    'Access-Control-Allow-Credentials': 'true'}}
+
+                )
+                .success(function(data) {
+                    // La requête a été reçue par UCOPIA
+                    // On masque la fenêtre d'attente
+
+                    $ionicLoading.hide().then(function(){
+                        console.log("La requête a bien été reçue par UCOPIA");
+                    });
+
+                    // Récupération de la réponse d'UCOPIA pour analyse d'éventuels message d'erreurs
+                    //
+                    var desData = data.split(':');
+                    if (desData[0]!=0) {
+                        // Si le premier caractère du message est différent de zéro c'est qu'il y a eu une erreur lors de la tentative d'enregistrement
+                        // On alerte l'utilisateur en lui donnant l'explication sur l'erreur fournie par UCOPIA
                         $ionicPopup.alert({
-                            title: 'Il y a eu un problème!',
-                            template: data
+                            title: 'Il y a eu une erreur!',
+                            template: desData[1]
+
                         });
-                        console.log(status);
+
+                    } else {
+                        // Le premier chiffre correspond à Zero et l'enregistrement s'est bien passé
+                        // Préparation de l'envoi du SMS à l'utilisateur
+
+                        // Initialisation des variables du message
+                        var from = "HotSpot AZUR-WIFLY";
+                        var text = "Vous avez enregistré votre compte avec succès. \n Voici vos informations personnelles : \n Votre nom : "+nom+"\n Votre prénom : "+prenom+"\n Votre adresse Email : "+email+"\n Votre mot de passe : "+localStorage.mdp+"\n L\'équipe d\'Azur-Wifly vous souhaites une bon surf sur ses HotSpot.";
+
+
+
+                        // Nous devons vérifier à quel maison de téléphonie appartient l'utilisateur
+                        var pref = phoneNumber.split('');
+
+                        if (pref[1]== '3') {
+                            // L'utilisateur fait partie du réseau azur
+                            // On initialise la variable pour envoyer le sms
+                            var urlSmsc = 'http://azur-wifly.com:13132/cgi-bin/sendsms?smsc=smsc1&from='+from+'&username=capp&password=musobase&to='+phoneNumber+'&text='+text;
+
+                            //Envoi de la requête pour l'envoi du sms à kannel sur le MiddleWare
+                            $http.get(urlSmsc, {headers: {'Accept':'*/*',
+                                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit (KHTML, like Gecko) Chrome Safari',
+                                    'Access-Control-Allow-Origin': '*',
+                                    'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
+                                    'Access-Control-Max-Age': '3600',
+                                    'Access-Control-Allow-Headers': 'x-requested-with,origin,content-type,accept,X-XSRF-TOKEN',
+                                    'Access-Control-Allow-Credentials': 'true'}}
+                                )
+                                .success(function(data) {
+                                    // Le serveur a bien reçu la requête d'envoi de sms à l'utilisateur
+
+
+                                })
+                                .error(function(data, status) {
+                                    // La requête d'envoi de sms n'a pas pu être envoyées
+                                    // On masque la fenêtre d'attente de l'utilisateur
+                                    $ionicLoading.hide().then(function(){
+                                        console.log("une erreur s'est produite");
+                                    });
+
+                                    // On affiche une fenêtre pour alerter l'utilisateur
+                                    // An alert dialog
+                                    var text = "Nous n'avons pu vous envoyer le sms. \n Voici vos informations personnelles.\n Vous devez les conserver précieusement, ils vous serviront pour vous connecter : \n Votre nom : "+nom+"\n Votre prénom : "+prenom+"\n Votre adresse Email : "+email+"\n Votre mot de passe : "+localStorage.mdp+"\n L\'équipe d\'Azur-Wifly vous souhaites une bon surf sur ses HotSpot.";
+
+                                    $ionicPopup.alert({
+                                        title: 'Il y a eu un problème!',
+                                        template: text
+                                    });
+
+                                });
+
+
+                        } else {
+                            // Envoi du sms par un autre moyen
+
+                        }
+
+
+
+
+                        // Lancer la vue Home
+                        $state.go('home');
+                    }
+                })
+                .error(function(data) {
+                    // L'enregistrement n'a pu être fait et aucune requête n'est parvenue à UCOPIA
+                    // On masque la fenêtre d'attente
+                    $ionicLoading.hide().then(function(){
+                        console.log("L'enregistrement n'a pu être fait et aucune requête n'est parvenue à UCOPIA");
+                        console.log(data)
+                    });
+
+                    // On alerte l'utilisateur
+
+                    $ionicPopup.alert({
+                        title: 'Il y a eu un problème!',
+                        template: "Nous n'avons pas pu procéder à votre enregistrement. \n Veuillez recommencer s'il vous plait."
                     });
 
 
-                } else {
-                    // Envoi par un autre moyen
-                }
+                });
 
-
-                
-
-                // Lancer la vue Home
-                $state.go('home');
-            }
-        }).error(function(data, status) {
-            $ionicLoading.hide().then(function(){
-                console.log("The loading indicator is now hidden");
-            });
-            //$scope.errors.push(status);
-            // An alert dialog
-            $ionicPopup.alert({
-                title: 'Il y a eu un problème!',
-                template: status
-            });
-            console.log(status);
-        });
+        }
 
     };
-
-  function randomStr(m) {
-    var m = m || 9; s = '', r = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    for (var i=0; i < m; i++) { s += r.charAt(Math.floor(Math.random()*r.length)); }
-    return s;
-  };
-
 }])
 
-.controller('homeCtrl', ['$scope', '$stateParams', '$state', '$http', '$ionicLoading', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams, $state, $http,$ionicLoading) {
-
+	/*
+    * Page d'accueil
+    */
+	
+	.controller('homeCtrl', ['$scope', '$stateParams', '$state', '$http', '$ionicLoading', 'objUser', 
+function ($scope, $stateParams, $state, $http,$ionicLoading, objUser) {
+	// L'utlisateur souhaite se déconnecter et sortir de l'application
     $scope.logout = function() {
+		objUser.logout(sessionStorage.phone);
+    };
+  $scope.$on('$ionicView.enter', function(){
+	  // On initialise la connexion pur récupérer les informations utilisateur
+	  //objUser.loadInit($scope);
+      sessionStorage.clear();
 
 
-      var url = 'https://controller.access.network/portal_api.php?action=disconnect&login='+sessionStorage.phone;
-      //var url ='https://controller.access.network/portal_api.php?action=init'
+      var url ='https://hotspot.azur-wifly.com/portal_api.php?action=init';
       $http.get(url, {headers: {'Accept':'*/*',
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit (KHTML, like Gecko) Chrome Safari',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
-        'Access-Control-Max-Age': '3600',
-        'Access-Control-Allow-Headers': 'x-requested-with,origin,content-type,accept,X-XSRF-TOKEN',
-        'Access-Control-Allow-Credentials':'true'}}
+          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit (KHTML, like Gecko) Chrome Safari',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
+          'Access-Control-Max-Age': '3600',
+          'Access-Control-Allow-Headers': 'x-requested-with,origin,content-type,accept,X-XSRF-TOKEN',
+          'Access-Control-Allow-Credentials': 'true'}}
       ).success(function(data) {
-        $ionicLoading.hide().then(function(){
-          console.log("The loading indicator is now hidden");
-        });
-        //console.log(data);
-        if (data.error_code === 1)
-        {
+          $ionicLoading.hide().then(function(){
+              console.log("The loading indicator is now hidden");
+
+          });
+          //console.log(data);
+
+          var desData = angular.fromJson(data);
+          console.log(desData);
+          $scope.forfaits = angular.fromJson(desData);
+
+          console.log(angular.fromJson(desData));
+
+          var userInfo =angular.fromJson(desData.user);
+
+          // stay connected?
+          sessionStorage.setItem("registered","false");
+
+          // User Info
+          sessionStorage.setItem("phone",userInfo.login.value );
+
+          // Sauvegarde du profil/forfait
+          sessionStorage.setItem("profile_id",userInfo.profile.id);
+          sessionStorage.setItem("profile_value",userInfo.profile.value);
+
+          // Sauvegarde option deconnexion auto
+          sessionStorage.setItem("autodisconnect",userInfo.autoDisconnect.value);
+
+          // Sauvegarde validité profil
+          /* Début */
+          sessionStorage.setItem("schedule_begin_day",userInfo.schedule.value[0].begin.day);
+          sessionStorage.setItem("schedule_begin_hour",userInfo.schedule.value[0].begin.hour);
+          sessionStorage.setItem("schedule_begin_day",userInfo.schedule.value[0].begin.min);
+
+
+          /* Fin */
+
+
+          sessionStorage.setItem("schedule_end_day",userInfo.schedule.value[0].end.day);
+          sessionStorage.setItem("schedule_end_hour",userInfo.schedule.value[0].end.hour);
+          sessionStorage.setItem("schedule_end_day",userInfo.schedule.value[0].end.min);
+
+
+          // Validité
+          sessionStorage.setItem("validity",userInfo.validity.value);
+
+          //Données consommées
+          sessionStorage.setItem("consumed_montant",userInfo.consumedData.upload.value);
+          sessionStorage.setItem("consumed_descendant",userInfo.consumedData.download.value);
+
+          //Données restantes
+          sessionStorage.setItem("debit_restant_montant",userInfo.consumedData.extra.value[1].available.upload);
+          sessionStorage.setItem("debit_restant_descendant",userInfo.consumedData.extra.value[1].available.download);
+
+          //Bande passante
+          sessionStorage.setItem("bande_passante",userInfo.consumedData.extra.value[0].bandwidth.download);
+
+
+          // Initialisation du temps de la nouvelle connexion
+          sessionStorage.setItem("init_time",userInfo.initTimeGMT.value);
+
+          // Crédit temps
+          sessionStorage.setItem("time_credit_value",userInfo.timeCredit);
+          //sessionStorage.setItem("time_credit_remaining_value",userInfo.timeCredit.remaining);
+          //sessionStorage.setItem("time_credit_reneweach_value",userInfo.timeCredit.reneweach);
+          //sessionStorage.setItem("time_credit_initialremaining_value",userInfo.timeCredit.initialRemaining);
+
+          // Informations utilisateurs
+          sessionStorage.setItem("user_lastname",userInfo.lastName);
+          sessionStorage.setItem("user_firstname",userInfo.firstName);
+          sessionStorage.setItem("user_email",userInfo.email);
+          sessionStorage.setItem("user_phone",userInfo.phoneNumber);
+
+
+
+      }).error(function(data, status) {
+          $ionicLoading.hide().then(function(){
+              console.log("The loading indicator is now hidden");
+          });
+          //$scope.errors.push(status);
           // An alert dialog
           $ionicPopup.alert({
-            title: 'Il y a eu un problème!',
-            template: data.status
+              title: 'Il y a eu un problème!',
+              template: data
           });
-
-          //popupalert.show();
           console.log(data);
-        }
-        else
-        {
-          sessionStorage.clear();
-          console.log('deconnexion');
-          $state.go('connexion');
-        }
-      }).error(function(data, status) {
-        $ionicLoading.hide().then(function(){
-          console.log("The loading indicator is now hidden");
-        });
-        //$scope.errors.push(status);
-        // An alert dialog
-        $ionicPopup.alert({
-          title: 'Il y a eu un problème!',
-          template: data
-        });
-        console.log(data);
       });
-
-    };
-
-  $scope.$on('$ionicView.enter', function(){
-    sessionStorage.clear();
-
-    //var url_forfait = 'https://controller.access.network/deleg/api_admin_deleg.php?deleg_id=andy&deleg_pwd=andy&action=get_refill_options&reply_format=json';
-var url ='https://controller.access.network/portal_api.php?action=init';
-    $http.get(url, {headers: {'Accept':'*/*',
-      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit (KHTML, like Gecko) Chrome Safari',
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
-      'Access-Control-Max-Age': '3600',
-      'Access-Control-Allow-Headers': 'x-requested-with,origin,content-type,accept,X-XSRF-TOKEN',
-      'Access-Control-Allow-Credentials': 'true'}}
-    ).success(function(data) {
-      $ionicLoading.hide().then(function(){
-        console.log("The loading indicator is now hidden");
-
-      });
-      //console.log(data);
-
-      var desData = angular.fromJson(data);
-      console.log(desData);
-      $scope.forfaits = angular.fromJson(desData);
-
-      console.log(angular.fromJson(desData));
-
-      var userInfo =angular.fromJson(desData.user);
-
-      // stay connected?
-      sessionStorage.setItem("connected","false");
-
-      // User Info
-      sessionStorage.setItem("phone",userInfo.login.value );
-
-      // Sauvegarde du profil/forfait
-      sessionStorage.setItem("profile_id",userInfo.profile.id);
-      sessionStorage.setItem("profile_value",userInfo.profile.value);
-
-      // Sauvegarde option deconnexion auto
-      sessionStorage.setItem("autodisconnect",userInfo.autoDisconnect.value);
-
-      // Sauvegarde validité profil
-      /* Début */
-       sessionStorage.setItem("schedule_begin_day",userInfo.schedule.value[0].begin.day);
-       sessionStorage.setItem("schedule_begin_hour",userInfo.schedule.value[0].begin.hour);
-       sessionStorage.setItem("schedule_begin_day",userInfo.schedule.value[0].begin.min);
-
-
-      /* Fin */
-
-
-       sessionStorage.setItem("schedule_end_day",userInfo.schedule.value[0].end.day);
-       sessionStorage.setItem("schedule_end_hour",userInfo.schedule.value[0].end.hour);
-       sessionStorage.setItem("schedule_end_day",userInfo.schedule.value[0].end.min);
-
-
-      // Validité
-      sessionStorage.setItem("validity",userInfo.validity.value);
-
-        //Données consommées
-        sessionStorage.setItem("consumed_montant",userInfo.consumedData.upload.value);
-        sessionStorage.setItem("consumed_descendant",userInfo.consumedData.download.value);
-
-        //Données restantes
-        sessionStorage.setItem("debit_restant_montant",userInfo.consumedData.extra.value[1].available.upload);
-        sessionStorage.setItem("debit_restant_descendant",userInfo.consumedData.extra.value[1].available.download);
-
-        //Bande passante
-        sessionStorage.setItem("bande_passante",userInfo.consumedData.extra.value[0].bandwidth.download);
-
-
-        // Initialisation du temps de la nouvelle connexion
-      sessionStorage.setItem("init_time",userInfo.initTimeGMT.value);
-
-      // Crédit temps
-      sessionStorage.setItem("time_credit_value",userInfo.timeCredit);
-      //sessionStorage.setItem("time_credit_remaining_value",userInfo.timeCredit.remaining);
-      //sessionStorage.setItem("time_credit_reneweach_value",userInfo.timeCredit.reneweach);
-      //sessionStorage.setItem("time_credit_initialremaining_value",userInfo.timeCredit.initialRemaining);
-
-      // Informations utilisateurs
-      sessionStorage.setItem("user_lastname",userInfo.lastName);
-      sessionStorage.setItem("user_firstname",userInfo.firstName);
-      sessionStorage.setItem("user_email",userInfo.email);
-      sessionStorage.setItem("user_phone",userInfo.phoneNumber);
-
-
-
-    }).error(function(data, status) {
-      $ionicLoading.hide().then(function(){
-        console.log("The loading indicator is now hidden");
-      });
-      //$scope.errors.push(status);
-      // An alert dialog
-      $ionicPopup.alert({
-        title: 'Il y a eu un problème!',
-        template: data
-      });
-      console.log(data);
-    });
-
-
   });
-
-
+	//On initialise la vue avec les informations envoyées par UCOPIA
+	//objUser.initView($scope);
     $scope.useruserName = sessionStorage.phone;
-  $scope.userProfile = sessionStorage.profile_value;
-  $scope.userautoDisconnect = sessionStorage.autodisconnect;
+    $scope.userProfile = sessionStorage.profile_value;
+    $scope.userautoDisconnect = sessionStorage.autodisconnect;
     var date = new Date(sessionStorage.validity*1000);
     //Day
     var day = date.getDay();
@@ -659,10 +728,10 @@ var url ='https://controller.access.network/portal_api.php?action=init';
 
 // Will display time in 10:30:23 format
     var formattedTime = day+ ' '+date_of_day+ ' '+month+' '+year+ ' à '+ hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
-  $scope.userValidity = formattedTime;
-  //$scope.userTimeremain = sessionStorage.init_time;
+    $scope.userValidity = formattedTime;
+    //$scope.userTimeremain = sessionStorage.init_time;
 
-  //$scope.userTimeremain = bytesToSize(sessionStorage.consumed_montant);
+    //$scope.userTimeremain = bytesToSize(sessionStorage.consumed_montant);
     $scope.debit_montant = bytesToSize(sessionStorage.consumed_montant);
     $scope.debit_descendant = bytesToSize(sessionStorage.consumed_descendant);
 
@@ -685,114 +754,77 @@ var url ='https://controller.access.network/portal_api.php?action=init';
         if (i == 0) return bytes + ' ' + sizes[i];
         return (bytes / Math.pow(1024, i)).toFixed(1) + ' ' + sizes[i];
     }
+
+
 }])
+	
+	.controller('sLectionDuForfaitCtrl', ['$scope', '$stateParams', '$http', '$state', '$ionicPopup', '$ionicLoading', 'objUser', 'objPayment',
+function ($scope, $stateParams, $http, $state, $ionicPopup, $ionicLoading, objUser, objPayment) {
+    // L'utlisateur souhaite se déconnecter et sortir de l'application
+    $scope.logout = objUser.logout(sessionStorage.phone);
+    $scope.$on('$ionicView.enter', function(){
+		// On récupère les options de rechargement
+		//objPayment.getOR();
+        // Dès que l'utilisateur entre dans la vue on initialise le lien pour récupérer les options de rechargement
 
-.controller('sLectionDuForfaitCtrl', ['$scope', '$stateParams', '$http', '$state', '$ionicPopup', '$ionicLoading',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams, $http, $state, $ionicPopup, $ionicLoading) {
+        var url_forfait = 'https://hotspot.azur-wifly.com/deleg/api_admin_deleg.php?deleg_id=andy&deleg_pwd=andy&action=get_refill_options&reply_format=json';
 
-  $scope.$on('$ionicView.enter', function(){
+        // On lance la requête pour les options de rechargement
+        $http.get(url_forfait, {headers: {'Accept':'*/*',
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit (KHTML, like Gecko) Chrome Safari',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
+                'Access-Control-Max-Age': '3600',
+                'Access-Control-Allow-Headers': 'x-requested-with,origin,content-type,accept,X-XSRF-TOKEN',
+                'Access-Control-Allow-Credentials': 'true'}}
+            )
+            .success(function(data) {
+                // la requête a bien été reçue par UCOPIA
 
-    var url_forfait = 'https://controller.access.network/deleg/api_admin_deleg.php?deleg_id=andy&deleg_pwd=andy&action=get_refill_options&reply_format=json';
+                // On masque la fenêtre d'attente
+                $ionicLoading.hide().then(function(){
+                    console.log("la requête a bien été reçue par UCOPIA");
 
-    $http.get(url_forfait, {headers: {'Accept':'*/*',
-      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit (KHTML, like Gecko) Chrome Safari',
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
-      'Access-Control-Max-Age': '3600',
-      'Access-Control-Allow-Headers': 'x-requested-with,origin,content-type,accept,X-XSRF-TOKEN',
-      'Access-Control-Allow-Credentials': 'true'}}
-    ).success(function(data) {
-      $ionicLoading.hide().then(function(){
-        console.log("The loading indicator is now hidden");
-
-      });
-      //console.log(data);
-
-        var desData = angular.fromJson(data);
-        console.log(desData);
-        //var test_wifi = desData.split("_");
-      $scope.forfaits = angular.fromJson(desData);
-
-      console.log(angular.fromJson(desData));
-
-      //console.log(desData.length);
-
-
-    }).error(function(data, status) {
-      $ionicLoading.hide().then(function(){
-        console.log("The loading indicator is now hidden");
-      });
-      //$scope.errors.push(status);
-      // An alert dialog
-      $ionicPopup.alert({
-        title: 'Il y a eu un problème!',
-        template: data
-      });
-      console.log(data);
-    });
-
-
-  });
-
-    $scope.logout = function() {
-
-
-        var url = 'https://controller.access.network/portal_api.php?action=disconnect&login='+sessionStorage.phone;
-        //var url ='https://controller.access.network/portal_api.php?action=init'
-        $http.get(url, {headers: {'Accept':'*/*',
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit (KHTML, like Gecko) Chrome Safari',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
-            'Access-Control-Max-Age': '3600',
-            'Access-Control-Allow-Headers': 'x-requested-with,origin,content-type,accept,X-XSRF-TOKEN',
-            'Access-Control-Allow-Credentials':'true'}}
-        ).success(function(data) {
-            $ionicLoading.hide().then(function(){
-                console.log("The loading indicator is now hidden");
-            });
-            //console.log(data);
-            if (data.error_code === 1)
-            {
-                // An alert dialog
-                $ionicPopup.alert({
-                    title: 'Il y a eu un problème!',
-                    template: data.status
                 });
 
-                //popupalert.show();
-                console.log(data);
-            }
-            else
-            {
-                sessionStorage.clear();
-                console.log('deconnexion');
-                $state.go('connexion');
-            }
-        }).error(function(data, status) {
-            $ionicLoading.hide().then(function(){
-                console.log("The loading indicator is now hidden");
-            });
-            //$scope.errors.push(status);
-            // An alert dialog
-            $ionicPopup.alert({
-                title: 'Il y a eu un problème!',
-                template: data
-            });
-            console.log(data);
-        });
+
+                // On récupère les données Json envoyés par UCOPIA et on les insère dans une variable tableau
+                var desData = angular.fromJson(data);
+                console.log(desData);
+                $scope.forfaits = angular.fromJson(desData);
+
+            })
+
+            .error(function(data, status) {
+                // La requête n'a pas été recue par UCOPIA
+                // On masque la fenêtre d'attente
+                $ionicLoading.hide().then(function(){
+                    console.log("La requête n'a pas été recue par UCOPIA");
+                });
 
 
-    };
+                // On alerte l'utilisateur
+                $ionicPopup.alert({
+                    title: 'Il y a eu un problème!',
+                    template: "Une erreur s'est produite, nous n'avons pas pu récupérer les options de rechargement. \n Veuillez redémarrer votre application."
+                });
+
+            });
+  });
     $scope.selectForfait = function(value) {
+		//objPayment.initForfait(value.selectforfait,value.radio);
+        // L'utilisateur souhaite créditer son compte pour accéder à internet
         //console.log(value);
 
+            var forfait = value.selectforfait;
+            var radio = value.radio;
+
+        if (forfait!= null) {
+            // L'utilisateur a bien renseigné une option de rechargement pour achat
 
 
-        if (value.selectforfait!= null) {
-
-            sessionStorage.setItem("forfait",value.selectforfait);
+            // On stocke les informations particulères de l'option dans des variables
+            sessionStorage.setItem("forfait",forfait);
             //sessionStorage.setItem("montant",value.selectforfait);
             var prix = sessionStorage.forfait;
             var prix_parse = prix.split(",");
@@ -801,12 +833,16 @@ function ($scope, $stateParams, $http, $state, $ionicPopup, $ionicLoading) {
             sessionStorage.setItem("montant",prix_parse[1]);
             sessionStorage.setItem("forfait_id",prix_parse[0]);
 
-            switch (value.radio) {
 
+
+            switch (radio) {
+
+
+                // Si l'utilisateur a selectionné azur comme méthode de paiement
                 case "azur":
                     /*$state.go("azur");
-                    console.log("azur");
-                    sessionStorage.setItem("portefeuille","azur");*/
+                     console.log("azur");
+                     sessionStorage.setItem("portefeuille","azur");*/
                     $ionicLoading.show({
                         template: 'Connexion...'
                     }).then(function(){
@@ -816,7 +852,7 @@ function ($scope, $stateParams, $http, $state, $ionicPopup, $ionicLoading) {
 
 
 
-                    var url = 'http://144.217.80.224/service/soap/client-azur.php?montant='+sessionStorage.montant+'&transaction=debit';
+                    var url = 'http://azur-wifly.com/service/soap/client-azur.php?montant='+sessionStorage.montant+'&transaction=debit&phone='+sessionStorage.phone;
 
                     $http.get(url, {
                         headers: {
@@ -906,75 +942,19 @@ function ($scope, $stateParams, $http, $state, $ionicPopup, $ionicLoading) {
             });
 
         }
-
     };
-
 }])
-
-.controller('bGFI1Ctrl', ['$scope', '$http', '$stateParams', '$state', '$ionicPopup', '$ionicLoading',// The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $http, $stateParams, $state, $ionicPopup, $ionicLoading) {
-
-    $scope.logout = function() {
-
-
-        var url = 'https://controller.access.network/portal_api.php?action=disconnect&login='+sessionStorage.phone;
-        //var url ='https://controller.access.network/portal_api.php?action=init'
-        $http.get(url, {headers: {'Accept':'*/*',
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit (KHTML, like Gecko) Chrome Safari',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
-            'Access-Control-Max-Age': '3600',
-            'Access-Control-Allow-Headers': 'x-requested-with,origin,content-type,accept,X-XSRF-TOKEN',
-            'Access-Control-Allow-Credentials':'true'}}
-        ).success(function(data) {
-            $ionicLoading.hide().then(function(){
-                console.log("The loading indicator is now hidden");
-            });
-            //console.log(data);
-            if (data.error_code === 1)
-            {
-                // An alert dialog
-                $ionicPopup.alert({
-                    title: 'Il y a eu un problème!',
-                    template: data.status
-                });
-
-                //popupalert.show();
-                console.log(data);
-            }
-            else
-            {
-                sessionStorage.clear();
-                console.log('deconnexion');
-                $state.go('connexion');
-            }
-        }).error(function(data, status) {
-            $ionicLoading.hide().then(function(){
-                console.log("The loading indicator is now hidden");
-            });
-            //$scope.errors.push(status);
-            // An alert dialog
-            $ionicPopup.alert({
-                title: 'Il y a eu un problème!',
-                template: data
-            });
-            console.log(data);
-        });
-
-
-    };
-
-
-    console.log(sessionStorage.montant);
-    console.log(sessionStorage.forfait_id);
-
-
+	
+	.controller('bGFI1Ctrl', ['$scope', '$http', '$stateParams', '$state', '$ionicPopup', '$ionicLoading','authUser',
+function ($scope, $http, $stateParams, $state, $ionicPopup, $ionicLoading, objUser) {
+	// L'utlisateur souhaite se déconnecter et sortir de l'application
+    $scope.logout = objUser.logout();
+	// On initialise le payment BGFI
     $scope.phoneBGFI = function(value) {
+		//objPayment.phoneBgfi(value.phone);
+        var phone = value.phone;
 
-
-        if (value.phone == "phone") {
+        if (phone == "phone") {
 
             // An alert dialog
             $ionicPopup.alert({
@@ -983,8 +963,8 @@ function ($scope, $http, $stateParams, $state, $ionicPopup, $ionicLoading) {
             });
 
         } else {
-            sessionStorage.setItem("phoneMoney", value.phone);
-            var url = 'http://144.217.80.224/service/bgfi.php?tag=init&phone=241'+value.phone+'&montant='+sessionStorage.montant;
+            sessionStorage.setItem("phoneMoney", phone);
+            var url = 'http://azur-wifly.com/service/bgfi.php?tag=init&phone=241'+phone+'&montant='+sessionStorage.montant;
 
 
 
@@ -1038,688 +1018,221 @@ function ($scope, $http, $stateParams, $state, $ionicPopup, $ionicLoading) {
                 });
                 console.log(data);
             });
-            /*var url = 'http://144.217.80.224/service/register_ucopia.php';
 
-
-             $http.post(url,
-             {'name': value.name, 'lastname': value.lastname, 'phone': value.phone, 'email': value.email}
-             ).success(function (data) {
-
-             //console.log(data);
-             if (data.error_code === 1) {
-             console.log(data);
-             }
-             else {
-             $state.go('home');
-             }
-             }).error(function (data, status) {
-             //$scope.errors.push(status);
-             console.log(status);
-             });*/
         }
 
-
     };
-
-
 }])
-
-.controller('bGFI2Ctrl', ['$scope', '$http', '$stateParams', '$state', '$ionicPopup', '$ionicLoading', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $http, $stateParams, $state, $ionicPopup, $ionicLoading) {
-
+	
+	
+	.controller('bGFI2Ctrl', ['$scope', '$http', '$stateParams', '$state', '$ionicPopup', '$ionicLoading', 'objUser', 'objPayment',
+function ($scope, $http, $stateParams, $state, $ionicPopup, $ionicLoading, objUser, objPayment) {
+	// L'utlisateur souhaite se déconnecter et sortir de l'application
+	 $scope.logout = objUser.logout();
+	// Nous récupérons un code de rechargement correspondant au forfait choisi par l'utilisateur
   $scope.$on('$ionicView.enter', function(){
+	  //objPayment.refill();
+      var url_forfait = 'https://hotspot.azur-wifly.com/deleg/api_admin_deleg.php?deleg_id=andy&deleg_pwd=andy&action=get_refill_code&option_id='+forfait+'&reply_format=json';
 
-    var url_forfait = 'https://controller.access.network/deleg/api_admin_deleg.php?deleg_id=andy&deleg_pwd=andy&action=get_refill_code&option_id='+sessionStorage.forfait_id+'&reply_format=json';
+      $http.get(url_forfait, {headers: {'Accept':'*/*',
+          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit (KHTML, like Gecko) Chrome Safari',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
+          'Access-Control-Max-Age': '3600',
+          'Access-Control-Allow-Headers': 'x-requested-with,origin,content-type,accept,X-XSRF-TOKEN',
+          'Access-Control-Allow-Credentials': 'true'}}
+      ).success(function(data) {
+          $ionicLoading.hide().then(function(){
+              console.log("The loading indicator is now hidden");
 
-    $http.get(url_forfait, {headers: {'Accept':'*/*',
-      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit (KHTML, like Gecko) Chrome Safari',
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
-      'Access-Control-Max-Age': '3600',
-      'Access-Control-Allow-Headers': 'x-requested-with,origin,content-type,accept,X-XSRF-TOKEN',
-      'Access-Control-Allow-Credentials': 'true'}}
-    ).success(function(data) {
-      $ionicLoading.hide().then(function(){
-        console.log("The loading indicator is now hidden");
+          });
 
+          sessionStorage.setItem("refill_code",data.result)
+
+
+
+      }).error(function(data, status) {
+          $ionicLoading.hide().then(function(){
+              console.log("The loading indicator is now hidden");
+          });
+          //$scope.errors.push(status);
+          // An alert dialog
+          $ionicPopup.alert({
+              title: 'Il y a eu un problème!',
+              template: data
+          });
+          console.log(data);
       });
-      console.log(data.result);
-        console.log(sessionStorage.phoneMoney);
-        console.log(sessionStorage.montant);
-        console.log(sessionStorage.token);
-        console.log(sessionStorage.reference);
-        
-
-      sessionStorage.setItem("refill_code",data.result)
-
-
-
-    }).error(function(data, status) {
-      $ionicLoading.hide().then(function(){
-        console.log("The loading indicator is now hidden");
-      });
-      //$scope.errors.push(status);
-      // An alert dialog
-      $ionicPopup.alert({
-        title: 'Il y a eu un problème!',
-        template: data
-      });
-      console.log(data);
-    });
-
 
   });
-
-
-    $scope.logout = function() {
-
-
-        var url = 'https://controller.access.network/portal_api.php?action=disconnect&login='+sessionStorage.phone;
-        //var url ='https://controller.access.network/portal_api.php?action=init'
-        $http.get(url, {headers: {'Accept':'*/*',
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit (KHTML, like Gecko) Chrome Safari',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
-            'Access-Control-Max-Age': '3600',
-            'Access-Control-Allow-Headers': 'x-requested-with,origin,content-type,accept,X-XSRF-TOKEN',
-            'Access-Control-Allow-Credentials':'true'}}
-        ).success(function(data) {
-            $ionicLoading.hide().then(function(){
-                console.log("The loading indicator is now hidden");
-            });
-            //console.log(data);
-            if (data.error_code === 1)
-            {
-                // An alert dialog
-                $ionicPopup.alert({
-                    title: 'Il y a eu un problème!',
-                    template: data.status
-                });
-
-                //popupalert.show();
-                console.log(data);
-            }
-            else
-            {
-                sessionStorage.clear();
-                console.log('deconnexion');
-                $state.go('connexion');
-            }
-        }).error(function(data, status) {
-            $ionicLoading.hide().then(function(){
-                console.log("The loading indicator is now hidden");
-            });
-            //$scope.errors.push(status);
-            // An alert dialog
-            $ionicPopup.alert({
-                title: 'Il y a eu un problème!',
-                template: data
-            });
-            console.log(data);
-        });
-
-
-    };
-
+	// Nous finalisons le payement avec le code reçu par l'utilisateur
     $scope.webcodeBGFI = function(value) {
-        if (value.webcode == "webcode") {
+        var webcode = value.webcode;
+		//objPayment.webcodeBgfi(value.webcode)
+        if (webcode == "webcode") {
+            // L'utilisateur n'a pas renseigné aucun webcode
 
-            // An alert dialog
+            // On affiche une fenêtre pour l'alerter
             $ionicPopup.alert({
                 title: 'Il y a eu un problème!',
                 template: "Vous n'avez pas renseigné le webcode fourni par BGFI"
             });
 
-        } else {
-            var url = 'http://144.217.80.224/service/bgfi.php?tag=payment&phone=241'+sessionStorage.phoneMoney+'&montant='+sessionStorage.montant+'&token='+sessionStorage.token+'&reference='+sessionStorage.reference+'&webcode='+value.webcode;
+        }
+        else {
+            // creation du lien pour l'API BGFI
+
+            var url = 'http://azur-wifly.com/service/bgfi.php?tag=payment&phone=241'+sessionStorage.phoneMoney+'&montant='+sessionStorage.montant+'&token='+sessionStorage.token+'&reference='+sessionStorage.reference+'&webcode='+webcode;
+
+            // On affiche une fenêtre d'attente
             $ionicLoading.show({
+
                 template: 'Transaction en cours...'
+
             }).then(function(){
-                console.log("The loading indicator is now displayed");
+
+                console.log("Transaction en cours...");
+
             });
-            $http.get(url
-            ).success(function (data) {
-                $ionicLoading.hide().then(function(){
-                    console.log("The loading indicator is now hidden");
-                });
-
-                //console.log(data);
-                if (data.error_code === 1) {
-                    console.log(data.message);
-                    // An alert dialog
-                    $ionicPopup.alert({
-                        title: 'Il y a eu un problème!',
-                        template: data.message
-                    });
 
 
-                }
-                else {
-                    console.log(data);
+            // On lance la requête auprès de BGFI
+            $http.get(url)
 
+                .success(function (data) {
+                    // BGFI a reçu la requête
 
-                  var url_forfait = 'https://controller.access.network/deleg/api_admin_deleg.php?deleg_id=andy&deleg_pwd=andy&action=set_refill_code_info&refill_code='+sessionStorage.refill_code+'&user_id='+sessionStorage.phone;
-
-                  $http.get(url_forfait, {headers: {'Accept':'*/*',
-                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit (KHTML, like Gecko) Chrome Safari',
-                    'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
-                    'Access-Control-Max-Age': '3600',
-                    'Access-Control-Allow-Headers': 'x-requested-with,origin,content-type,accept,X-XSRF-TOKEN',
-                    'Access-Control-Allow-Credentials': 'true'}}
-                  ).success(function(data) {
+                    // On masque la fenêtre d'attente
                     $ionicLoading.hide().then(function(){
-                      console.log("The loading indicator is now hidden");
+
+                        console.log("The loading indicator is now hidden");
 
                     });
-                    console.log(data);
 
-                      $state.go('home');
+                    //on cherche les erreurs venant d'UCOPIA
 
-                  }).error(function(data, status) {
-                    $ionicLoading.hide().then(function(){
-                      console.log("The loading indicator is now hidden");
-                    });
-                    //$scope.errors.push(status);
-                    // An alert dialog
-                    $ionicPopup.alert({
-                      title: 'Il y a eu un problème!',
-                      template: data
-                    });
-                    console.log(data);
-                  });
-
-                }
-            }).error(function (data, status) {
-                $ionicLoading.hide().then(function(){
-                    console.log("The loading indicator is now hidden");
-                });
-                //$scope.errors.push(status);
-                // An alert dialog
-                $ionicPopup.alert({
-                    title: 'Il y a eu un problème!',
-                    template: status
-                });
-                console.log(status);
-            });
-
-        }
-
-    };
-
-}])
-
-.controller('aIRTELCtrl', ['$scope', '$http', '$stateParams', '$state', '$ionicPopup', '$ionicLoading', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $http, $stateParams, $state, $ionicPopup, $ionicLoading) {
-
-
-    $scope.logout = function() {
-
-
-        var url = 'https://controller.access.network/portal_api.php?action=disconnect&login='+sessionStorage.phone;
-        //var url ='https://controller.access.network/portal_api.php?action=init'
-        $http.get(url, {headers: {'Accept':'*/*',
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit (KHTML, like Gecko) Chrome Safari',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
-            'Access-Control-Max-Age': '3600',
-            'Access-Control-Allow-Headers': 'x-requested-with,origin,content-type,accept,X-XSRF-TOKEN',
-            'Access-Control-Allow-Credentials':'true'}}
-        ).success(function(data) {
-            $ionicLoading.hide().then(function(){
-                console.log("The loading indicator is now hidden");
-            });
-            //console.log(data);
-            if (data.error_code === 1)
-            {
-                // An alert dialog
-                $ionicPopup.alert({
-                    title: 'Il y a eu un problème!',
-                    template: data.status
-                });
-
-                //popupalert.show();
-                console.log(data);
-            }
-            else
-            {
-                sessionStorage.clear();
-                console.log('deconnexion');
-                $state.go('connexion');
-            }
-        }).error(function(data, status) {
-            $ionicLoading.hide().then(function(){
-                console.log("The loading indicator is now hidden");
-            });
-            //$scope.errors.push(status);
-            // An alert dialog
-            $ionicPopup.alert({
-                title: 'Il y a eu un problème!',
-                template: data
-            });
-            console.log(data);
-        });
-
-
-    };
-
-    $scope.fluxAIRTEL = function(value) {
-        var url1 = 'http://ilink-app.com/login_web_service.php';
-        var url2 = 'http://ilink-app.com/transaction_web_service.php';
-        var username = 'cfao';
-        var mdp = 'cfao';
-
-
-        if (value.phone=="phone") {
-            // An alert dialog
-            $ionicPopup.alert({
-                title: 'Il y a eu un problème!',
-                template: "Vous n'avez pas entré de numéro de téléphone"
-            });
-
-
-        } else  {
-            if (value.secret=="code secret") {
-                // An alert dialog
-                $ionicPopup.alert({
-                    title: 'Il y a eu un problème!',
-                    template: "Vous n'avez pas entré de mot de passe"
-                });
-            } else {
-
-                $ionicLoading.show({
-                    template: 'Transaction en cours...'
-                }).then(function(){
-                    console.log("The loading indicator is now displayed");
-                });
-
-                // Récupération d'un token
-                $http.post(url1,
-                    {'username': username, 'mdp': mdp}
-                ).success(function (data) {
-
-                    //console.log(data);
                     if (data.error_code === 1) {
-                        $ionicLoading.hide().then(function(){
-                            console.log("The loading indicator is now hidden");
-                        });
-                        // An alert dialog
+                        // UCOPIA nous a renvoyé une erreur
+
+
+                        // Nous alertons l'utilisateur
                         $ionicPopup.alert({
+
                             title: 'Il y a eu un problème!',
-                            template: data.status
+
+                            template: data.message
                         });
+
 
                     }
                     else {
-                        sessionStorage.setItem("token", data.token);
+                        // UCOPIA n'a renvoyé aucune erreur
 
-                        $http.post(url2,
-                            {'token':sessionStorage.token,'phone':value.phone, 'mdp':value.secret, 'produit':'forfait','montant':sessionStorage.forfait}
-                        ).success(function(data) {
-                            $ionicLoading.hide().then(function(){
-                                console.log("The loading indicator is now hidden");
-                            });
-                            //console.log(data);
-                            if (data.error_code === 1)
-                            {
-                                // An alert dialog
-                                $ionicPopup.alert({
-                                    title: 'Il y a eu un problème!',
-                                    template: data.status
+
+                        // On initialise le lien
+
+                        var url_forfait = 'https://hotspot.azur-wifly.com/deleg/api_admin_deleg.php?deleg_id=andy&deleg_pwd=andy&action=set_refill_code_info&refill_code='+sessionStorage.refill_code+'&user_id='+sessionStorage.phone;
+
+
+
+                        // On lance la requête
+                        $http.get(url_forfait, {headers: {'Accept':'*/*',
+                                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit (KHTML, like Gecko) Chrome Safari',
+                                'Access-Control-Allow-Origin': '*',
+                                'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
+                                'Access-Control-Max-Age': '3600',
+                                'Access-Control-Allow-Headers': 'x-requested-with,origin,content-type,accept,X-XSRF-TOKEN',
+                                'Access-Control-Allow-Credentials': 'true'}}
+                            )
+                            .success(function(data) {
+                                // UCOPIA a bien reçu la requête
+                                // On masque la fenêtre d'attente
+
+                                $ionicLoading.hide().then(function(){
+
+                                    console.log("The loading indicator is now hidden");
+
+
                                 });
 
-
-
-
-                                //popupalert.show();
                                 console.log(data);
-                            }
-                            else
-                            {
+
+                                // On redirige l'utilisateur vers la page d'accueil
                                 $state.go('home');
-                            }
-                        }).error(function(data, status) {
-                            $ionicLoading.hide().then(function(){
-                                console.log("The loading indicator is now hidden");
+
+                            })
+                            .error(function(data, status) {
+                                //UCOPIA n'a pas reçu de requête
+
+                                // On masque la fenêtre d'attente
+                                $ionicLoading.hide().then(function(){
+
+                                    console.log("The loading indicator is now hidden");
+
+                                });
+
+                                // On alerte l'utilisateur sur l'erreur
+                                $ionicPopup.alert({
+                                    title: 'Il y a eu un problème!',
+                                    template: data
+                                });
+                                console.log(data);
                             });
-
-                            //$scope.errors.push(status);
-                            // An alert dialog
-                            $ionicPopup.alert({
-                                title: 'Il y a eu un problème!',
-                                template: status
-                            });
-                            console.log(status);
-                        });
-
-
-
 
                     }
+                })
+                .error(function (data, status) {
+                    // Bgfi n'a reçu aucune requête
 
-                }).error(function (data, status) {
+                    // On masque la fenêtre d'attente
                     $ionicLoading.hide().then(function(){
+
                         console.log("The loading indicator is now hidden");
+
                     });
-                    //$scope.errors.push(status);
-                    // An alert dialog
+
+
+                    // On alerte l'utilisateur
+
                     $ionicPopup.alert({
+
                         title: 'Il y a eu un problème!',
+
                         template: status
+
                     });
+
                     console.log(status);
                 });
 
-            }
         }
 
     };
-
-
 }])
-
-.controller('fLOOZCtrl', ['$scope', '$http', '$stateParams', '$state', '$ionicPopup', '$ionicLoading', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $http, $stateParams, $state, $ionicPopup, $ionicLoading) {
-
-    $scope.logout = function() {
-
-
-        var url = 'https://controller.access.network/portal_api.php?action=disconnect&login='+sessionStorage.phone;
-        //var url ='https://controller.access.network/portal_api.php?action=init'
-        $http.get(url, {headers: {'Accept':'*/*',
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit (KHTML, like Gecko) Chrome Safari',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
-            'Access-Control-Max-Age': '3600',
-            'Access-Control-Allow-Headers': 'x-requested-with,origin,content-type,accept,X-XSRF-TOKEN',
-            'Access-Control-Allow-Credentials':'true'}}
-        ).success(function(data) {
-            $ionicLoading.hide().then(function(){
-                console.log("The loading indicator is now hidden");
-            });
-            //console.log(data);
-            if (data.error_code === 1)
-            {
-                // An alert dialog
-                $ionicPopup.alert({
-                    title: 'Il y a eu un problème!',
-                    template: data.status
-                });
-
-                //popupalert.show();
-                console.log(data);
-            }
-            else
-            {
-                sessionStorage.clear();
-                console.log('deconnexion');
-                $state.go('connexion');
-            }
-        }).error(function(data, status) {
-            $ionicLoading.hide().then(function(){
-                console.log("The loading indicator is now hidden");
-            });
-            //$scope.errors.push(status);
-            // An alert dialog
-            $ionicPopup.alert({
-                title: 'Il y a eu un problème!',
-                template: data
-            });
-            console.log(data);
-        });
-
-
-    };
-
-    $scope.fluxFLOOZ = function(value) {
-        var url1 = 'http://ilink-app.com/login_web_service.php';
-        var url2 = 'http://ilink-app.com/transaction_web_service.php';
-        var username = 'cfao';
-        var mdp = 'cfao';
-
-
-        if (value.phone=="phone") {
-            // An alert dialog
-            $ionicPopup.alert({
-                title: 'Il y a eu un problème!',
-                template: "Vous n'avez pas entré de numéro de téléphone"
-            });
-
-
-        } else  {
-            if (value.secret=="code secret") {
-                // An alert dialog
-                $ionicPopup.alert({
-                    title: 'Il y a eu un problème!',
-                    template: "Vous n'avez pas entré de mot de passe"
-                });
-            } else {
-
-                $ionicLoading.show({
-                    template: 'Transaction en cours...'
-                }).then(function(){
-                    console.log("The loading indicator is now displayed");
-                });
-
-                // Récupération d'un token
-                $http.post(url1,
-                    {'username': username, 'mdp': mdp}
-                ).success(function (data) {
-
-                    //console.log(data);
-                    if (data.error_code === 1) {
-                        $ionicLoading.hide().then(function(){
-                            console.log("The loading indicator is now hidden");
-                        });
-                        // An alert dialog
-                        $ionicPopup.alert({
-                            title: 'Il y a eu un problème!',
-                            template: data.status
-                        });
-
-                    }
-                    else {
-                        sessionStorage.setItem("token", data.token);
-
-                        $http.post(url2,
-                            {'token':sessionStorage.token,'phone':value.phone, 'mdp':value.secret, 'produit':'forfait','montant':sessionStorage.forfait}
-                        ).success(function(data) {
-                            $ionicLoading.hide().then(function(){
-                                console.log("The loading indicator is now hidden");
-                            });
-                            //console.log(data);
-                            if (data.error_code === 1)
-                            {
-                                // An alert dialog
-                                $ionicPopup.alert({
-                                    title: 'Il y a eu un problème!',
-                                    template: data.status
-                                });
-
-
-
-
-                                //popupalert.show();
-                                console.log(data);
-                            }
-                            else
-                            {
-                                $state.go('home');
-                            }
-                        }).error(function(data, status) {
-                            $ionicLoading.hide().then(function(){
-                                console.log("The loading indicator is now hidden");
-                            });
-
-                            //$scope.errors.push(status);
-                            // An alert dialog
-                            $ionicPopup.alert({
-                                title: 'Il y a eu un problème!',
-                                template: status
-                            });
-                            console.log(status);
-                        });
-
-
-
-
-                    }
-
-                }).error(function (data, status) {
-                    $ionicLoading.hide().then(function(){
-                        console.log("The loading indicator is now hidden");
-                    });
-                    //$scope.errors.push(status);
-                    // An alert dialog
-                    $ionicPopup.alert({
-                        title: 'Il y a eu un problème!',
-                        template: status
-                    });
-                    console.log(status);
-                });
-
-            }
-        }
-
-    };
-
-
+	
+	.controller('aIRTELCtrl', ['$scope', '$http', '$stateParams', '$state', '$ionicPopup', '$ionicLoading', 'objUser', 'objPayment', 
+function ($scope, $http, $stateParams, $state, $ionicPopup, $ionicLoading, objUser, objPayment) {
+	// L'utlisateur souhaite se déconnecter et sortir de l'application
+    $scope.logout = objUser.logout();
+	// L'utilisateur initialise le payment Flooz
+    $scope.fluxAIRTEL = objPayment.airtel();
 }])
-
-    .controller('azurCtrl', ['$scope', '$http', '$stateParams', '$state', '$ionicPopup', '$ionicLoading', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-        function ($scope, $http, $stateParams, $state, $ionicPopup, $ionicLoading) {
-
-            $scope.logout = function() {
-
-
-                var url = 'https://controller.access.network/portal_api.php?action=disconnect&login='+sessionStorage.phone;
-                //var url ='https://controller.access.network/portal_api.php?action=init'
-                $http.get(url, {headers: {'Accept':'*/*',
-                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit (KHTML, like Gecko) Chrome Safari',
-                    'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
-                    'Access-Control-Max-Age': '3600',
-                    'Access-Control-Allow-Headers': 'x-requested-with,origin,content-type,accept,X-XSRF-TOKEN',
-                    'Access-Control-Allow-Credentials':'true'}}
-                ).success(function(data) {
-                    $ionicLoading.hide().then(function(){
-                        console.log("The loading indicator is now hidden");
-                    });
-                    //console.log(data);
-                    if (data.error_code === 1)
-                    {
-                        // An alert dialog
-                        $ionicPopup.alert({
-                            title: 'Il y a eu un problème!',
-                            template: data.status
-                        });
-
-                        //popupalert.show();
-                        console.log(data);
-                    }
-                    else
-                    {
-                        sessionStorage.clear();
-                        console.log('deconnexion');
-                        $state.go('connexion');
-                    }
-                }).error(function(data, status) {
-                    $ionicLoading.hide().then(function(){
-                        console.log("The loading indicator is now hidden");
-                    });
-                    //$scope.errors.push(status);
-                    // An alert dialog
-                    $ionicPopup.alert({
-                        title: 'Il y a eu un problème!',
-                        template: data
-                    });
-                    console.log(data);
-                });
-
-
-            };
+	
+	.controller('fLOOZCtrl', ['$scope', '$http', '$stateParams', '$state', '$ionicPopup', '$ionicLoading','objUser', 'objPayment', 
+function ($scope, $http, $stateParams, $state, $ionicPopup, $ionicLoading, objUser, objPayment) {
+	// L'utlisateur souhaite se déconnecter et sortir de l'application
+    $scope.logout = objUser.logout();
+	// L'utilisateur initialise le payement Flooz
+    $scope.fluxFLOOZ = objPayment.flooz();
+}])
+	
+	.controller('azurCtrl', ['$scope', '$http', '$stateParams', '$state', '$ionicPopup', '$ionicLoading', 'authUser', 
+        function ($scope, $http, $stateParams, $state, $ionicPopup, $ionicLoading, authUser) {
+			// L'utlisateur souhaite se déconnecter et sortir de l'application
+            $scope.logout = authUser.logout();
+			// On affiche à l'utilisateur les informations de sa récente transaction
             $scope.accountId = sessionStorage.accountId;
             $scope.amount = sessionStorage.amount/100;
             $scope.balance = sessionStorage.balance/100;
 
-        }])
-
-.controller('clientsAzurCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $http, $stateParams, $state, $ionicPopup, $ionicLoading) {
-
-
-}])
-
-.controller('clientsWiFlyCtrl', ['$scope', '$stateParams', // The following is the constructor function for this page's controller. See https://docs.angularjs.org/guide/controller
-// You can include any angular dependencies as parameters for this function
-// TIP: Access Route Parameters for your page via $stateParams.parameterName
-function ($scope, $stateParams) {
-
-
-}]).controller('ListCtrl', function ($scope,$ionicPlatform, $state, NotesDataService) {
-    $scope.$on('$ionicView.enter', function(e) {
-        NotesDataService.getAll(function(data){
-            $scope.itemsList = data
-        })
-    })
-
-    $scope.gotoEdit = function(idNote){
-        $state.go('form', {id: idNote})
-    }
-})
-
-    .controller('FormCtrl', function ($scope, $stateParams, $ionicPopup, $state, NotesDataService) {
-        $scope.$on('$ionicView.enter', function(e) {
-            initForm()
-        })
-
-        function initForm(){
-            if($stateParams.id){
-                NotesDataService.getById($stateParams.id, function(item){
-                    $scope.noteForm = item
-                })
-            } else {
-                $scope.noteForm = {}
-            }
-        }
-        function onSaveSuccess(){
-            $state.go('list')
-        }
-        $scope.saveNote = function(){
-
-            if(!$scope.noteForm.id){
-                NotesDataService.createNote($scope.noteForm).then(onSaveSuccess)
-            } else {
-                NotesDataService.updateNote($scope.noteForm).then(onSaveSuccess)
-            }
-        }
-
-        $scope.confirmDelete = function(idNote) {
-            var confirmPopup = $ionicPopup.confirm({
-                title: 'Supprimer une note',
-                template: 'êtes vous sûr de vouloir supprimer ?'
-            })
-
-            confirmPopup.then(function(res) {
-                if(res) {
-                    NotesDataService.deleteNote(idNote).then(onSaveSuccess)
-                }
-            })
-        }
-
-
-    });
-
-
-
-
+        }]);
