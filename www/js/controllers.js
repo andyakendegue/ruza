@@ -466,8 +466,10 @@ angular.module('app.controllers', [])
                                          if (pref[1]== '3') {
                                          // L'utilisateur fait partie du réseau azur
                                          // On initialise la variable pour envoyer le sms
-                                         var urlSmsc = 'http://azur-wifly.com:13132/cgi-bin/sendsms?smsc=smsc1&from='+from+'&username=capp&password=musobase&to='+phoneNumber+'&text='+text;
-                                         
+                                         //var urlSmsc = 'http://azur-wifly.com:13132/cgi-bin/sendsms?smsc=smsc1&from='+from+'&username=capp&password=musobase&to='+phoneNumber+'&text='+text;
+
+
+                                             var urlSmsc = 'https://azur-wifly.com/service/sms.php?phoneNumber='+phoneNumber+'&text='+text;
                                          //Envoi de la requête pour l'envoi du sms à kannel sur le MiddleWare
                                          $http.get(urlSmsc, {headers: {'Accept':'*/*',
                                                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit (KHTML, like Gecko) Chrome Safari',
@@ -479,7 +481,26 @@ angular.module('app.controllers', [])
                                                    )
                                          .success(function(data) {
                                                   // Le serveur a bien reçu la requête d'envoi de sms à l'utilisateur
-                                                  
+
+                                             var desData = angular.fromJson(data);
+
+                                             if(desData.error_code==1) {
+                                                 $ionicLoading.hide().then(function(){
+                                                     console.log("une erreur s'est produite");
+                                                 });
+
+                                                 // On affiche une fenêtre pour alerter l'utilisateur
+                                                 // An alert dialog
+                                                 var text = "Nous n'avons pu vous envoyer le sms. \n Voici vos informations personnelles.\n Vous devez les conserver précieusement, ils vous serviront pour vous connecter : \n Votre nom : "+nom+"\n Votre prénom : "+prenom+"\n Votre adresse Email : "+email+"\n Votre mot de passe : "+localStorage.mdp+"\n L\'équipe d\'Azur-Wifly vous souhaites une bon surf sur ses HotSpot.";
+
+                                                 $ionicPopup.alert({
+                                                     title: 'Il y a eu un problème!',
+                                                     template: desData.message
+                                                 });
+
+                                             }
+
+
                                                   
                                                   })
                                          .error(function(data, status) {
