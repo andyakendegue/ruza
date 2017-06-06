@@ -223,6 +223,9 @@ angular.module('app.controllers', [])
                               
                               }
                               
+                              console.log(sessionStorage.mdp);
+                              console.log(sessionStorage.phone);
+                              
                               // On initialise la connexion à UCOPIA
                               
                               // La fenêtre d'attente
@@ -234,7 +237,7 @@ angular.module('app.controllers', [])
                               
                               
                               // Le lien pour la requête REST
-                              var url = 'https://hotspot.azur-wifly.com/portal_api.php?action=authenticate&login='+sessionStorage.phone+'&password='+sessionStorage.mdp;
+                              var url = 'https://hotspot.azur-wifly.com/portal_api.php?action=authenticate&login='+value.phone+'&password='+value.mdp;
                               
                               // Envoi de la requête en GET
                               
@@ -383,7 +386,7 @@ angular.module('app.controllers', [])
                                 function ($scope, $http, $stateParams, $state, $ionicLoading, $ionicPopup, randomString, objUser) {
                                 // L'utilisateur lance le processus d'inscription
                                 $scope.registerClient = function(value) {
-                                if (value == undefined || value.name == undefined || value.lastname == undefined || value.phone == undefined && value.email == undefined) {
+                                if (value == undefined || value.phone == undefined ) {
                                 var text = "Tous les champs doivent être rempli. \n Veuillez remplir les champs vides";
                                 
                                 $ionicPopup.alert({
@@ -412,7 +415,7 @@ angular.module('app.controllers', [])
                                 
                                 
                                 // On initialise le lien de connexion à UCOPIA
-                                var url = 'https://hotspot.azur-wifly.com/deleg/api_admin_deleg.php?deleg_id=andy&deleg_pwd=andy&action=adduser&user_id='+phoneNumber+'&user_pwd='+mdp+'&user_grp=test&user_lastname='+nom+'&user_firstname='+prenom+'&user_email='+email+'&user_phonenumber='+phoneNumber;
+                                var url = 'https://hotspot.azur-wifly.com/deleg/api_admin_deleg.php?deleg_id=andy&deleg_pwd=andy&action=adduser&user_id=241'+phoneNumber+'&user_pwd='+mdp+'&user_grp=test&user_lastname='+nom+'&user_firstname='+prenom+'&user_email='+email+'&user_phonenumber=241'+phoneNumber;
                                 
                                 
                                 // On lance la requête d'inscription en GET
@@ -787,8 +790,11 @@ angular.module('app.controllers', [])
 
 .controller('sLectionDuForfaitCtrl', ['$scope', '$stateParams', '$http', '$state', '$ionicPopup', '$ionicLoading', 'objUser', 'objPayment',
                                       function ($scope, $stateParams, $http, $state, $ionicPopup, $ionicLoading, objUser, objPayment) {
-                                      // L'utlisateur souhaite se déconnecter et sortir de l'application
-                                      $scope.logout = objUser.logout(sessionStorage.phone);
+                                      
+                                      $scope.logout = function() {
+                                      objUser.logout(sessionStorage.phone);
+                                      };
+                                      
                                       $scope.$on('$ionicView.enter', function(){
                                                  // On récupère les options de rechargement
                                                  //objPayment.getOR();
@@ -838,6 +844,8 @@ angular.module('app.controllers', [])
                                                         
                                                         });
                                                  });
+                                      // L'utlisateur souhaite se déconnecter et sortir de l'application
+                                      
                                       $scope.selectForfait = function(value) {
                                       //objPayment.initForfait(value.selectforfait,value.radio);
                                       // L'utilisateur souhaite créditer son compte pour accéder à internet
@@ -867,74 +875,10 @@ angular.module('app.controllers', [])
                                       
                                       // Si l'utilisateur a selectionné azur comme méthode de paiement
                                       case "azur":
-                                      /*$state.go("azur");
+                                      $state.go("azurNumber");
                                        console.log("azur");
-                                       sessionStorage.setItem("portefeuille","azur");*/
-                                      $ionicLoading.show({
-                                                         template: 'Connexion...'
-                                                         }).then(function(){
-                                                                 console.log("The loading indicator is now displayed");
-                                                                 });
+                                       sessionStorage.setItem("portefeuille","azur");
                                       
-                                      
-                                      
-                                      
-                                      var url = 'http://azur-wifly.com/service/soap/client-azur.php?montant='+sessionStorage.montant+'&transaction=debit&phone='+sessionStorage.phone;
-                                      
-                                      $http.get(url, {
-                                                headers: {
-                                                'Accept': '*/*',
-                                                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit (KHTML, like Gecko) Chrome Safari',
-                                                'Access-Control-Allow-Origin': '*',
-                                                'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
-                                                'Access-Control-Max-Age': '3600',
-                                                'Access-Control-Allow-Headers': 'x-requested-with,origin,content-type,accept,X-XSRF-TOKEN',
-                                                'Access-Control-Allow-Credentials': 'true'
-                                                }
-                                                }).success(function (data) {
-                                                           
-                                                           $ionicLoading.hide().then(function(){
-                                                                                     console.log("The loading indicator is now hidden");
-                                                                                     });
-                                                           
-                                                           console.log(data);
-                                                           
-                                                           if (typeof data.soapenvBody.ns9createSubscriptionTransactionResponse  != "undefined") {
-                                                           //noinspection JSAnnotator
-                                                           sessionStorage.setItem('accountId',data.soapenvBody.ns9createSubscriptionTransactionResponse.ns9return.ns3accountID);
-                                                           //noinspection JSAnnotator
-                                                           sessionStorage.setItem('amount', data.soapenvBody.ns9createSubscriptionTransactionResponse.ns9return.ns3amount);
-                                                           //noinspection JSAnnotator
-                                                           sessionStorage.setItem('balance', data.soapenvBody.ns9createSubscriptionTransactionResponse.ns9return.ns3balance);
-                                                           
-                                                           //
-                                                           } else {
-                                                           $ionicLoading.hide().then(function(){
-                                                                                     console.log("The loading indicator is now hidden");
-                                                                                     });
-                                                           console.log('Une erreur est survenue. Votre solde est insufisant. \nVeuillez recharger votre compte !');
-                                                           //if ()
-                                                           $ionicPopup.alert({
-                                                                             title: 'une erreur est survenue',
-                                                                             template: data
-                                                                             });
-                                                           
-                                                           }
-                                                           
-                                                           // console.log('ok'+data);
-                                                           
-                                                           }).error(function (data, status) {
-                                                                    $ionicLoading.hide().then(function(){
-                                                                                              console.log("The loading indicator is now hidden");
-                                                                                              });
-                                                                    console.log('une erreur est survenue' + data);
-                                                                    $ionicPopup.alert({
-                                                                                      title: 'une erreur est survenue',
-                                                                                      template: data
-                                                                                      });
-                                                                    
-                                                                    
-                                                                    });
                                       break;
                                       case "bgfi":
                                       $state.go("bgfi1");
@@ -972,11 +916,12 @@ angular.module('app.controllers', [])
                                       };
                                       }])
 
-.controller('bGFI1Ctrl', ['$scope', '$http', '$stateParams', '$state', '$ionicPopup', '$ionicLoading','authUser',
+.controller('bGFI1Ctrl', ['$scope', '$http', '$stateParams', '$state', '$ionicPopup', '$ionicLoading','objUser',
                           function ($scope, $http, $stateParams, $state, $ionicPopup, $ionicLoading, objUser) {
                           // L'utlisateur souhaite se déconnecter et sortir de l'application
-                          $scope.logout = objUser.logout();
-                          // On initialise le payment BGFI
+                          $scope.logout = function() {
+                          objUser.logout(sessionStorage.phone);
+                          };                          // On initialise le payment BGFI
                           $scope.phoneBGFI = function(value) {
                           //objPayment.phoneBgfi(value.phone);
                           var phone = value.phone;
@@ -1055,7 +1000,9 @@ angular.module('app.controllers', [])
 .controller('bGFI2Ctrl', ['$scope', '$http', '$stateParams', '$state', '$ionicPopup', '$ionicLoading', 'objUser', 'objPayment',
                           function ($scope, $http, $stateParams, $state, $ionicPopup, $ionicLoading, objUser, objPayment) {
                           // L'utlisateur souhaite se déconnecter et sortir de l'application
-                          $scope.logout = objUser.logout();
+                          $scope.logout = function() {
+                          objUser.logout(sessionStorage.phone);
+                          };
                           // Nous récupérons un code de rechargement correspondant au forfait choisi par l'utilisateur
                           $scope.$on('$ionicView.enter', function(){
                                      //objPayment.refill();
@@ -1240,7 +1187,9 @@ angular.module('app.controllers', [])
 .controller('aIRTELCtrl', ['$scope', '$http', '$stateParams', '$state', '$ionicPopup', '$ionicLoading', 'objUser', 'objPayment',
                            function ($scope, $http, $stateParams, $state, $ionicPopup, $ionicLoading, objUser, objPayment) {
                            // L'utlisateur souhaite se déconnecter et sortir de l'application
-                           $scope.logout = objUser.logout();
+                           $scope.logout = function() {
+                           objUser.logout(sessionStorage.phone);
+                           };
                            // L'utilisateur initialise le payment Flooz
                            $scope.fluxAIRTEL = objPayment.airtel();
                            }])
@@ -1248,15 +1197,115 @@ angular.module('app.controllers', [])
 .controller('fLOOZCtrl', ['$scope', '$http', '$stateParams', '$state', '$ionicPopup', '$ionicLoading','objUser', 'objPayment',
                           function ($scope, $http, $stateParams, $state, $ionicPopup, $ionicLoading, objUser, objPayment) {
                           // L'utlisateur souhaite se déconnecter et sortir de l'application
-                          $scope.logout = objUser.logout();
+                          $scope.logout = function() {
+                          objUser.logout(sessionStorage.phone);
+                          };
                           // L'utilisateur initialise le payement Flooz
                           $scope.fluxFLOOZ = objPayment.flooz();
                           }])
 
-.controller('azurCtrl', ['$scope', '$http', '$stateParams', '$state', '$ionicPopup', '$ionicLoading', 'authUser',
+    .controller('azurNumberCtrl', ['$scope', '$http', '$stateParams', '$state', '$ionicPopup', '$ionicLoading','objUser',
+        function ($scope, $http, $stateParams, $state, $ionicPopup, $ionicLoading, objUser) {
+            // L'utlisateur souhaite se déconnecter et sortir de l'application
+            $scope.logout = function() {
+                objUser.logout(sessionStorage.phone);
+            };                          // On initialise le payment BGFI
+            $scope.phoneAzur = function(value) {
+                //objPayment.phoneBgfi(value.phone);
+                var phone = value.phone;
+
+                if (phone == "phone") {
+
+                    // An alert dialog
+                    $ionicPopup.alert({
+                        title: 'Il y a eu un problème!',
+                        template: "Vous n'avez pas renseigné votre numéro de téléphone"
+                    });
+
+                } else {
+                    sessionStorage.setItem("phoneMoney", phone);
+                    $ionicLoading.show({
+                        template: 'Connexion...'
+                    }).then(function(){
+                        console.log("The loading indicator is now displayed");
+                    });
+
+
+
+
+                    var url = 'http://azur-wifly.com/service/soap/client-azur.php?montant='+sessionStorage.montant+'&transaction=debit&phone='+sessionStorage.phone;
+
+                    $http.get(url, {
+                        headers: {
+                            'Accept': '*/*',
+                            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit (KHTML, like Gecko) Chrome Safari',
+                            'Access-Control-Allow-Origin': '*',
+                            'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
+                            'Access-Control-Max-Age': '3600',
+                            'Access-Control-Allow-Headers': 'x-requested-with,origin,content-type,accept,X-XSRF-TOKEN',
+                            'Access-Control-Allow-Credentials': 'true'
+                        }
+                    }).success(function (data) {
+
+                        $ionicLoading.hide().then(function(){
+                            console.log("The loading indicator is now hidden");
+                        });
+
+
+
+                        if (typeof data.soapenvBody.ns9createSubscriptionTransactionResponse  != "undefined") {
+                            //noinspection JSAnnotator
+                            sessionStorage.setItem('accountId',data.soapenvBody.ns9createSubscriptionTransactionResponse.ns9return.ns3accountID);
+                            //noinspection JSAnnotator
+                            sessionStorage.setItem('amount', data.soapenvBody.ns9createSubscriptionTransactionResponse.ns9return.ns3amount);
+                            //noinspection JSAnnotator
+                            sessionStorage.setItem('balance', data.soapenvBody.ns9createSubscriptionTransactionResponse.ns9return.ns3balance);
+                            console.log(data);
+                            $state.go('clientsAzur');
+
+                            //
+                        } else {
+                            $ionicLoading.hide().then(function(){
+                                console.log("The loading indicator is now hidden");
+                            });
+                            console.log('Une erreur est survenue. Votre solde est insufisant. \nVeuillez recharger votre compte !');
+                            //if ()
+                            $ionicPopup.alert({
+                                title: 'une erreur est survenue',
+                                template: data
+                            });
+
+                        }
+
+                        // console.log('ok'+data);
+
+                    }).error(function (data, status) {
+                        $ionicLoading.hide().then(function(){
+                            console.log("The loading indicator is now hidden");
+                        });
+                        console.log('une erreur est survenue' + data);
+                        $ionicPopup.alert({
+                            title: 'une erreur est survenue',
+                            template: data
+                        });
+
+
+                    });
+
+
+                }
+
+            };
+        }])
+
+
+
+    .controller('azurCtrl', ['$scope', '$http', '$stateParams', '$state', '$ionicPopup', '$ionicLoading', 'authUser',
                          function ($scope, $http, $stateParams, $state, $ionicPopup, $ionicLoading, authUser) {
                          // L'utlisateur souhaite se déconnecter et sortir de l'application
-                         $scope.logout = authUser.logout();
+                         $scope.logout = function() {
+                         objUser.logout(sessionStorage.phone);
+                         };
                          // On affiche à l'utilisateur les informations de sa récente transaction
                          $scope.accountId = sessionStorage.accountId;
                          $scope.amount = sessionStorage.amount/100;

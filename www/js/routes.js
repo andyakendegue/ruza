@@ -61,9 +61,13 @@ angular.module('app.routes', [])
   .state('clientsAzur', {
     url: '/page14',
     templateUrl: 'templates/clientsAzur.html',
-    controller: 'clientsAzurCtrl'
+    controller: 'azurCtrl'
   })
-
+      .state('azurNumber', {
+        url: '/page17',
+        templateUrl: 'templates/azurNumber.html',
+        controller: 'azurNumberCtrl'
+      })
 
       .state('azur', {
         url: '/page16',
