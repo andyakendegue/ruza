@@ -30,11 +30,11 @@
         <b>Validité</b> Jusqu'au
         {{ userValidity }}
       </a>
-      <a class="item item-icon-left">
+      <a class="item item-icon-left" ng-if="debit_descendant">
         <b>Données consommées</b>
           {{ debit_descendant }} descendant, {{ debit_montant}} montant
       </a>
-      <a class="item item-icon-left" >
+      <a class="item item-icon-left" ng-if="reste_descendant">
         <b>Données restantes</b>
         {{ reste_descendant }} descendant, {{ reste_montant }} montant
       </a>

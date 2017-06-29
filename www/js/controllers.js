@@ -457,7 +457,7 @@ angular.module('app.controllers', [])
 
                                          // Initialisation des variables du message
                                          var from = "HotSpot AZUR-WIFLY";
-                                         var text = "Vous avez enregistré votre compte avec succès. \n Voici vos informations personnelles : \n Votre nom : "+nom+"\n Votre prénom : "+prenom+"\n Votre adresse Email : "+email+"\n Votre mot de passe : "+localStorage.mdp+"\n L\'équipe d\'Azur-Wifly vous souhaites une bon surf sur ses HotSpot.";
+                                         var text = "Vous avez enregistré votre compte avec succès. \n Voici vos informations personnelles : \n Votre identifiant : "+phoneNumber+"\n Votre mot de passe : "+localStorage.mdp+"\n L\'équipe d\'Azur-Wifly vous souhaites une bon surf sur ses HotSpot.";
 
                                              $ionicPopup.alert({
                                                  title: 'Vos informations personnelles!',
@@ -497,7 +497,7 @@ angular.module('app.controllers', [])
 
                                                  // On affiche une fenêtre pour alerter l'utilisateur
                                                  // An alert dialog
-                                                 var text = "Nous n'avons pu vous envoyer le sms. \n Voici vos informations personnelles.\n Vous devez les conserver précieusement, ils vous serviront pour vous connecter : \n Votre nom : "+nom+"\n Votre prénom : "+prenom+"\n Votre adresse Email : "+email+"\n Votre mot de passe : "+localStorage.mdp+"\n L\'équipe d\'Azur-Wifly vous souhaites une bon surf sur ses HotSpot.";
+                                                 var text = "Nous n'avons pu vous envoyer le sms. \n Voici vos informations personnelles.\n Vous devez les conserver précieusement, ils vous serviront pour vous connecter : \n Votre identifiant : "+phoneNumber+"\n Votre mot de passe : "+localStorage.mdp+"\n L\'équipe d\'Azur-Wifly vous souhaites une bon surf sur ses HotSpot.";
 
                                                  $ionicPopup.alert({
                                                      title: 'Il y a eu un problème!',
@@ -518,7 +518,9 @@ angular.module('app.controllers', [])
 
                                                 // On affiche une fenêtre pour alerter l'utilisateur
                                                 // An alert dialog
+                                                //var text = "Nous n'avons pu vous envoyer le sms. \n Voici vos informations personnelles.\n Vous devez les conserver précieusement, ils vous serviront pour vous connecter : \n Votre nom : "+nom+"\n Votre prénom : "+prenom+"\n Votre adresse Email : "+email+"\n Votre mot de passe : "+localStorage.mdp+"\n L\'équipe d\'Azur-Wifly vous souhaites une bon surf sur ses HotSpot.";
                                                 var text = "Nous n'avons pu vous envoyer le sms. \n Voici vos informations personnelles.\n Vous devez les conserver précieusement, ils vous serviront pour vous connecter : \n Votre nom : "+nom+"\n Votre prénom : "+prenom+"\n Votre adresse Email : "+email+"\n Votre mot de passe : "+localStorage.mdp+"\n L\'équipe d\'Azur-Wifly vous souhaites une bon surf sur ses HotSpot.";
+
 
                                                 $ionicPopup.alert({
                                                                   title: 'Il y a eu un problème!',
@@ -536,8 +538,10 @@ angular.module('app.controllers', [])
 
 
 
-                                         // Lancer la vue Home
-                                         $state.go('home');
+
+
+                                         // Lancer la vue pour se connecter
+                                         $state.go('connexion');
                                          }
                                          })
                                 .error(function(data) {
@@ -681,6 +685,7 @@ angular.module('app.controllers', [])
                          $scope.userProfile = sessionStorage.profile_value;
                          $scope.userautoDisconnect = sessionStorage.autodisconnect;
                          var date = new Date(sessionStorage.validity*1000);
+                         console.log(sessionStorage.validity);
                          //Day
                          var day = date.getDay();
                          switch (day)
@@ -766,11 +771,18 @@ angular.module('app.controllers', [])
 
                          //$scope.userTimeremain = bytesToSize(sessionStorage.consumed_montant);
                          $scope.debit_montant = bytesToSize(sessionStorage.consumed_montant);
+                         console.log(sessionStorage.consumed_montant);
                          $scope.debit_descendant = bytesToSize(sessionStorage.consumed_descendant);
+                         console.log(sessionStorage.consumed_descendant);
 
                          $scope.reste_montant = bytesToSize(sessionStorage.debit_restant_montant);
+                         console.log(sessionStorage.debit_restant_montant);
                          $scope.reste_descendant = bytesToSize(sessionStorage.debit_restant_descendant);
+                         console.log(sessionStorage.debit_restant_descendant);
+
                          $scope.bande_passante = bytesToSize2(sessionStorage.bande_passante);
+                         console.log(sessionStorage.bande_passante);
+
 
                          // from http://scratch99.com/web-development/javascript/convert-bytes-to-mb-kb/
                          function bytesToSize(bytes) {

@@ -1,5 +1,8 @@
 {
   "name": "azur",
   "app_id": "770ef200",
-  "type": "ionic1"
+  "type": "ionic1",
+  "watchPatterns": [
+    "scss/**/*"
+  ]
 }
