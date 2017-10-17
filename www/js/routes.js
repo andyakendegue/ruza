@@ -1,82 +1,89 @@
 angular.module('app.routes', [])
 
-.config(function($stateProvider, $urlRouterProvider) {
+    .config(function ($stateProvider, $urlRouterProvider) {
 
-  // Ionic uses AngularUI Router which uses the concept of states
-  // Learn more here: https://github.com/angular-ui/ui-router
-  // Set up the various states which the app can be in.
-  // Each state's controller can be found in controllers.js
-  $stateProvider
-    
-  
+        // Ionic uses AngularUI Router which uses the concept of states
+        // Learn more here: https://github.com/angular-ui/ui-router
+        // Set up the various states which the app can be in.
+        // Each state's controller can be found in controllers.js
+        $stateProvider
 
-      .state('connexion', {
-    url: '/page1',
-    templateUrl: 'templates/connexion.html',
-    controller: 'connexionCtrl'
-  })
 
-  .state('inscription', {
-    url: '/page2',
-    templateUrl: 'templates/inscription.html',
-    controller: 'inscriptionCtrl'
-  })
 
-  .state('home', {
-    url: '/page3',
-    templateUrl: 'templates/home.html',
-    controller: 'homeCtrl'
-  })
+            .state('connexion', {
+                url: '/page1',
+                templateUrl: 'templates/connexion.html',
+                controller: 'connexionCtrl'
+            })
 
-  .state('sLectionDuForfait', {
-    url: '/page5',
-    templateUrl: 'templates/sLectionDuForfait.html',
-    controller: 'sLectionDuForfaitCtrl'
-  })
+            .state('inscription', {
+                url: '/page2',
+                templateUrl: 'templates/inscription.html',
+                controller: 'inscriptionCtrl'
+            })
 
-  .state('bgfi1', {
-    url: '/page6',
-    templateUrl: 'templates/bGFI1.html',
-    controller: 'bGFI1Ctrl'
-  })
+            .state('home', {
+                url: '/page3',
+                templateUrl: 'templates/home.html',
+                controller: 'homeCtrl'
+            })
 
-  .state('bgfi2', {
-    url: '/page7',
-    templateUrl: 'templates/bGFI2.html',
-    controller: 'bGFI2Ctrl'
-  })
+            .state('sLectionDuForfait', {
+                url: '/page5',
+                templateUrl: 'templates/sLectionDuForfait.html',
+                controller: 'sLectionDuForfaitCtrl'
+            })
 
-  .state('airtel', {
-    url: '/page10',
-    templateUrl: 'templates/aIRTEL.html',
-    controller: 'aIRTELCtrl'
-  })
+            .state('bgfi1', {
+                url: '/page6',
+                templateUrl: 'templates/bGFI1.html',
+                controller: 'bGFI1Ctrl'
+            })
 
-  .state('flooz', {
-    url: '/page13',
-    templateUrl: 'templates/fLOOZ.html',
-    controller: 'fLOOZCtrl'
-  })
+            .state('bgfi2', {
+                url: '/page7',
+                templateUrl: 'templates/bGFI2.html',
+                controller: 'bGFI2Ctrl'
+            })
 
-  .state('clientsAzur', {
-    url: '/page14',
-    templateUrl: 'templates/clientsAzur.html',
-    controller: 'azurCtrl'
-  })
-      .state('azurNumber', {
-        url: '/page17',
-        templateUrl: 'templates/azurNumber.html',
-        controller: 'azurNumberCtrl'
-      })
+            .state('airtel', {
+                url: '/page10',
+                templateUrl: 'templates/aIRTEL.html',
+                controller: 'aIRTELCtrl'
+            })
+            .state('airtel2', {
+                url: '/page18',
+                templateUrl: 'templates/aIRTEL2.html',
+                controller: 'aIRTEL2Ctrl'
+            })
 
-      .state('azur', {
-        url: '/page16',
-        templateUrl: 'templates/fLOOZ.html',
-        controller: 'fLOOZCtrl'
-      })
 
-$urlRouterProvider.otherwise('/page1')
+            .state('flooz', {
+                url: '/page13',
+                templateUrl: 'templates/fLOOZ.html',
+                controller: 'fLOOZCtrl'
+            })
 
-  
+            .state('clientsAzur', {
+                url: '/page14',
+                templateUrl: 'templates/clientsAzur.html',
+                controller: 'azurCtrl'
+            })
 
-});
+            .state('azurNumber', {
+                url: '/page17',
+                templateUrl: 'templates/azurNumber.html',
+                controller: 'azurNumberCtrl'
+            })
+
+            .state('azur', {
+                url: '/page16',
+                templateUrl: 'templates/fLOOZ.html',
+                controller: 'fLOOZCtrl'
+            })
+
+        $urlRouterProvider.otherwise('/page1')
+
+
+
+    });

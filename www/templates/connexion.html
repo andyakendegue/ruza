@@ -1,32 +1,32 @@
 <ion-view id="page1">
-  <ion-content padding="true" class="has-header">
-    <div id="connexion-markdown2" style="text-align:center;" class="show-list-numbers-and-dots">
-      <p style="color:#000000;font-weight:bolder">Bienvenue sur Azur-Wifly HotSpot Connect</p>
-    </div>
-    <figure style="text-align:center;width:40%;margin:0 auto;">
-      <img style="text-align:center;width:100%;" src="img/logo.png" />
-    </figure>
-    <div id="connexion-markdown3" style="text-align:center;" class="show-list-numbers-and-dots">
-      <p style="color:#000000;font-weight:bolder">Identifiez-vous. Saisissez votre numéro précédé de 241.</p>
-    </div>
-    <form id="connexion-form3" class="list">
-      <label class="item item-input" id="connexion-input6">
+    <ion-content padding="true">
+        <div id="connexion-markdown2" style="text-align:center;" class="show-list-numbers-and-dots">
+            <p style="color:#000000;font-weight:bolder">Bienvenue sur Azur-Wifly HotSpot Connect</p>
+        </div>
+        <figure style="text-align:center;width:40%;margin:0 auto;">
+            <img style="text-align:center;width:100%;" src="img/logo.png" />
+        </figure>
+        <div id="connexion-markdown3" style="text-align:center;" class="show-list-numbers-and-dots">
+            <p style="color:#000000;font-weight:bolder">Identifiez-vous. Saisissez votre numéro précédé de 241.</p>
+        </div>
+        <form id="connexion-form3" class="list">
+            <label class="item item-input" id="connexion-input6">
         <span class="input-label">Identifiant</span>
         <input type="text" placeholder="Numéro de téléphone"  id="phone" name="phone" ng-model="value.phone">
       </label>
-      <label class="item item-input" id="connexion-input7">
+            <label class="item item-input" id="connexion-input7">
         <span class="input-label">Mot de Passe</span>
         <input type="password" placeholder="Mot de passe"  id="mdp" name="mdp" ng-model="value.mdp">
       </label>
 
-        <ion-checkbox id="connected" name="connected" ng-model="value.radio" ng-checked="value.checked">Enregistrer vos identifiants?</ion-checkbox>
+            <ion-checkbox id="connected" name="connected" ng-model="value.radio" ng-checked="value.checked">Enregistrer vos identifiants?</ion-checkbox>
 
-      <a id="connexion-button1" class="button button-positive  button-block" ng-click='authClient(value);'>Connexion</a>
-    </form>
-    <a ui-sref="inscription" id="connexion-button2" class="button button-balanced  button-block">Enregistrement</a>
-    <!--<a ui-sref="clientsAzur" id="connexion-button3" class="button but  ton-calm  button-block">Client Azur</a>
+            <a id="connexion-button1" class="button button-positive  button-block" ng-click='authClient(value);'>Connexion</a>
+        </form>
+        <a ui-sref="inscription" id="connexion-button2" class="button button-balanced  button-block">Enregistrement</a>
+        <!--<a ui-sref="clientsAzur" id="connexion-button3" class="button but  ton-calm  button-block">Client Azur</a>
     <a ui-sref="clientsWiFly" id="connexion-button4" class="button button-assertive  button-block">Client WiFly</a>
     <button class="button" ng-click="add()">Add notification</button>
     <button class="button" ng-click="isScheduled()">Is Scheduled</button>-->
-  </ion-content>
+    </ion-content>
 </ion-view>
